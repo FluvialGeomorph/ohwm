@@ -20,6 +20,13 @@ devtools::check()
 
 # Deploy
 
+## use remotes::install_github to indicate to install source to renv
+remotes::install_github("FluvialGeomorph/fluvgeo@*release")
+remotes::install_github("FluvialGeomorph/RegionalCurve@*release")
+
+## update renv
+renv::snapshot()
+
 ## Local, CRAN or Package Manager ----
 ## This will build a tar.gz that can be installed locally,
 ## sent to CRAN, or to a package manager
