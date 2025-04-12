@@ -6,7 +6,7 @@ output: md_document
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 <!-- rmarkdown::render(input="README.Rmd", output_file = "README.md", output_format = "md_document") -->
 
-# `{ohwm}`
+# ohwm
 An R Shiny app for remotely identifying stream Ordinary High Water Marks (OHWM) using publicly available terrain data for small sites. 
 
 ## Package Status
