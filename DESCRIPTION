@@ -1,17 +1,35 @@
 Package: ohwm
-Title: An Amazing Shiny App
-Version: 0.0.0.9000
-Authors@R: 
-    person(given = "firstname",
-           family = "lastname",
+Title: Identify Ordinary High Water Marks
+Version: 2025.04.12
+Authors@R: c(
+    person("Michael", "Dougherty", 
+           email = "Michael.P.Dougherty@usace.army.mil", 
            role = c("aut", "cre"),
-           email = "your@email.com")
-Description: What the package does (one paragraph).
+           comment = c(ORCID = "0000-0002-1465-5927")),
+    person("Christopher", "Haring",
+           email = "Christopher.P.Haring@usace.army.mil",
+           role = c("aut")),
+    person("Thomas", "Darby",
+           email = "Thomas.A.Darby@usace.army.mil",
+           role = c("rev"))
+    )
+Description: An R Shiny app for remotely identifying stream Ordinary High Water Marks (OHWM) using publicly available terrain data for small sites.
 License: What license is it under?
 Imports: 
+    attempt,
     config,
+    DT,
+    glue,
     golem,
+    htmltools,
     shiny
 Encoding: UTF-8
 LazyData: true
 RoxygenNote: 7.1.1
+URL: https://github.com/FluvialGeomorph/ohwm
+BugReports: https://github.com/FluvialGeomorph/ohwm/issues
+Suggests: 
+    spelling,
+    testthat (>= 3.0.0)
+Config/testthat/edition: 3
+Language: en-US
