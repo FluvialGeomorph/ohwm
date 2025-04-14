@@ -3,39 +3,73 @@
 #' @param request Internal parameter for `{shiny}`.
 #'     DO NOT REMOVE.
 #' @import shiny
+#' @importFrom bslib page_navbar nav_panel layout_sidebar sidebar bs_theme
+#'                   accordion accordion_panel
+#' @importFrom mapedit editModUI
+#' @importFrom leaflet leafletOutput
+#' @importFrom shinyWidgets slimSelectInput noUiSliderInput 
+#' prepare_slim_choices
+#' @importFrom gt gt_output
+#' 
 #' @noRd
 app_ui <- function(request) {
   tagList(
-    # Leave this function for adding external resources
     golem_add_external_resources(),
-    # Your application UI logic
-    fluidPage(
-      golem::golem_welcome_page() # Remove this line to start building your UI
+    
+    page_navbar(
+      title = "Tiered Assessment",
+      id = "main",
+      theme = bs_theme(bootswatch = "cerulean", version = 5),
+      
+      nav_panel(title = "Draw XS", layout_sidebar(
+        # Display the xs editing module
+        editModUI(id = "xs_editor_ui_id"),
+        sidebar = sidebar(
+          title = "Draw XS Instructions",
+          position = "right",
+          width = "25%",
+          uiOutput("draw_xs_instructions"),
+          uiOutput('draw_fl_button')
+        )
+      )),
+      
+      nav_panel(title = "Draw Flowline", layout_sidebar(
+        # Display fl editing module
+        editModUI(id = "fl_editor_ui_id"),
+        sidebar = sidebar(
+          title = "Draw Flowline Instructions",
+          position = "right",
+          width = "25%",
+          uiOutput("draw_fl_instructions"),
+          #actionButton("view_results", "View Results")
+          uiOutput('view_results_button')
+        )
+      )),
+      
+      nav_panel(title = "Results", layout_sidebar(
+        # Display results_map
+        leafletOutput("results_map"),
+        sidebar = sidebar(
+          position = "right",
+          width = "50%",
+          accordion(
+            id = "Results",
+            open = c("Cross Sections"),
+            accordion_panel(title = "Longitudinal Profile", plotOutput("long_profile", height = "250px")),
+            accordion_panel(
+              title = "Cross Sections",
+              selectInput("pick_xs", label = "Select a cross section:", choices = c(1)),
+              numericInput("bankfull_elevation", "Select water level:", value = NULL),
+              # noUiSliderInput(inputId = "bankfull_elevation",
+              #                 label = "Select water level:",
+              #                 min = NULL, max = NULL,
+              #                 value = NULL),
+              plotOutput("xs_plot", height = "250px"),
+              gt_output("dimensions_table")
+            )
+          )
+        )
+      ))
     )
-  )
-}
-
-#' Add external Resources to the Application
-#'
-#' This function is internally used to add external
-#' resources inside the Shiny application.
-#'
-#' @import shiny
-#' @importFrom golem add_resource_path activate_js favicon bundle_resources
-#' @noRd
-golem_add_external_resources <- function() {
-  add_resource_path(
-    "www",
-    app_sys("app/www")
-  )
-
-  tags$head(
-    favicon(),
-    bundle_resources(
-      path = app_sys("app/www"),
-      app_title = "ohwm"
-    )
-    # Add here other external resources
-    # for example, you can add shinyalert::useShinyalert()
   )
 }
