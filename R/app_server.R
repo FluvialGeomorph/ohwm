@@ -15,7 +15,7 @@
 #' @importFrom sf st_as_sf st_sfc
 #' @importFrom terra plot crs
 #' @importFrom shinybusy show_modal_spinner remove_modal_spinner
-#' @importFrom fluvgeo sf_fix_crs 
+#' @importFrom fluvgeo sf_fix_crs get_dem
 #'             get_leaflet get_terrain_leaflet get_results_leaflet
 #'             flowline flowline_points cross_section cross_section_points 
 #'             compare_long_profile xs_compare_plot_L2 
