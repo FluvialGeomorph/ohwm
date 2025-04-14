@@ -15,7 +15,10 @@
 #' @importFrom sf st_as_sf st_sfc
 #' @importFrom terra plot crs
 #' @importFrom shinybusy show_modal_spinner remove_modal_spinner
-#' @importFrom fluvgeo compare_long_profile xs_compare_plot_L2 
+#' @importFrom fluvgeo sf_fix_crs 
+#'             get_leaflet get_terrain_leaflet get_results_leaflet
+#'             flowline flowline_points cross_section cross_section_points 
+#'             compare_long_profile xs_compare_plot_L2 
 #' @importFrom shinyWidgets updateSlimSelect updateNoUiSliderInput
 #' @importFrom gt render_gt
 #' @noRd
@@ -205,7 +208,10 @@ app_server <- function(input, output, session) {
       compare_long_profile(stream = "current stream", fl_pts_list)
     })
     print("pick cross section -----------------------------------------------")
-    updateSelectInput(session, "pick_xs", choices = seq(min(xs_pts$Seq), max(xs_pts$Seq)))
+    updateSelectInput(
+      session, "pick_xs", 
+      choices = seq(min(xs_pts$Seq), max(xs_pts$Seq))
+    )
     print(req(input$pick_xs))
     print("pick bankfull_elevation ------------------------------------------")
     updateNumericInput(
