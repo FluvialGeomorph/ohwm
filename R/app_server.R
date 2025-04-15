@@ -15,7 +15,7 @@
 #' @importFrom sf st_as_sf st_sfc
 #' @importFrom terra plot crs
 #' @importFrom shinybusy show_modal_spinner remove_modal_spinner
-#' @importFrom fluvgeo sf_fix_crs get_dem
+#' @importFrom fluvgeo sf_fix_crs get_dem dem2rem
 #'             get_leaflet get_terrain_leaflet get_results_leaflet
 #'             flowline flowline_points cross_section cross_section_points 
 #'             compare_long_profile xs_compare_plot_L2 
@@ -56,7 +56,7 @@ app_server <- function(input, output, session) {
     return(fl_pts)
   })
   makeReactiveBinding("fl_pts")
-  # Define an empty dem
+  # Define an empty DEM
   dem <- reactive({
     raster <- matrix(1:25, nrow = 5, ncol = 5) %>%
       terra::rast()
@@ -64,14 +64,14 @@ app_server <- function(input, output, session) {
     return(raster)
   })
   makeReactiveBinding("dem")
-  # Define an empty detrend
-  detrend <- reactive({
+  # Define an empty REM
+  rem <- reactive({
     raster <- matrix(1:25, nrow = 5, ncol = 5) %>%
       terra::rast()
     terra::crs(raster) <- "EPSG:3857"
     return(raster)
   })
-  makeReactiveBinding("detrend")
+  makeReactiveBinding("rem")
   
   # Ensure fl_editor_ui mapedit module available at app scope
   fl_editor_ui <- NULL
@@ -183,15 +183,15 @@ app_server <- function(input, output, session) {
     fl_pts <<- flowline_points(fl, dem, station_distance = 5)
     #save_test_data(fl_pts, "fl_pts")
     print(fl_pts)
-    print("calculate detrend ------------------------------------------------")
-    detrend <- dem           # bogus move until I get detrend function working
-    print(detrend)
+    print("calculate REM ----------------------------------------------------")
+    rem <- dem2rem(dem, fl, fl_pts, buffer_distance = 1000)           
+    print(rem)
     print("process cross section --------------------------------------------")
     xs <<- cross_section(xs, fl_pts)
     print(xs)
     print("process cross section points -------------------------------------")
     station_distance = 1
-    xs_pts <<- cross_section_points(xs, dem, detrend, station_distance)
+    xs_pts <<- cross_section_points(xs, dem, rem, station_distance)
     xs_pts <<- xs_pts %>%
       mutate(POINT_M_units = "m") %>%
       mutate(channel = 1) %>%
