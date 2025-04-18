@@ -15,7 +15,7 @@
 #' @importFrom sf st_as_sf st_sfc
 #' @importFrom terra plot crs
 #' @importFrom shinybusy show_modal_spinner remove_modal_spinner
-#' @importFrom fluvgeo sf_fix_crs get_dem dem2rem
+#' @importFrom fluvgeo sf_fix_crs get_dem detrend
 #'             get_leaflet get_terrain_leaflet get_results_leaflet
 #'             flowline flowline_points cross_section cross_section_points 
 #'             compare_long_profile xs_compare_plot_L2 
@@ -184,7 +184,7 @@ app_server <- function(input, output, session) {
     #save_test_data(fl_pts, "fl_pts")
     print(fl_pts)
     print("calculate REM ----------------------------------------------------")
-    rem <- dem2rem(dem, fl, fl_pts, buffer_distance = 1000)           
+    rem <- detrend(dem, fl, fl_pts, buffer_distance = 1000)$rem           
     print(rem)
     print("process cross section --------------------------------------------")
     xs <<- cross_section(xs, fl_pts)
