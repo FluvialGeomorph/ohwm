@@ -7,7 +7,7 @@
 #'                   accordion accordion_panel
 #' @importFrom mapedit editModUI
 #' @importFrom leaflet leafletOutput
-#' @importFrom shinyWidgets slimSelectInput noUiSliderInput 
+#' @importFrom shinyWidgets autonumericInput
 #' prepare_slim_choices
 #' @importFrom gt gt_output
 #' 
@@ -61,10 +61,10 @@ app_ui <- function(request) {
               selectInput("pick_xs", label = "Select a cross section:", 
                             choices = c(1)),
               splitLayout(
-                numericInput("channel_elevation", "Channel REM value:", 
-                             value = 103),
-                numericInput("floodplain_elevation", "Floodplain REM value:", 
-                             value = 112)),
+                autonumericInput("channel_elevation", "Channel REM value:", 
+                                 value = 105, decimalPlaces = 1),
+                autonumericInput("floodplain_elevation", "Floodplain REM value:", 
+                                 value = 112, decimalPlaces = 1)),
               plotOutput("xs_plot_floodplain", height = "250px"),
               plotOutput("xs_plot_channel", height = "250px"),
               gt_output("dimensions_table")

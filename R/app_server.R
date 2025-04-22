@@ -8,11 +8,12 @@
 #' @importFrom purrr map
 #' @importFrom leaflet leaflet addProviderTiles setView addLayersControl 
 #'                     renderLeaflet leafletProxy leafletOptions leafletCRS
+#'                     removeShape addPolygons flyTo
 #' @importFrom dplyr %>% bind_rows mutate select filter
 #' @importFrom mapedit editMod
 #' @importFrom leafpm addPmToolbar pmToolbarOptions
 #' @importFrom leaflet.extras addSearchOSM searchOptions
-#' @importFrom sf st_as_sf st_sfc
+#' @importFrom sf st_as_sf st_sfc st_transform
 #' @importFrom terra plot crs ifel as.polygons disagg relate vect
 #' @importFrom tidyterra filter mutate
 #' @importFrom shinybusy show_modal_spinner remove_modal_spinner
@@ -21,7 +22,7 @@
 #'             get_leaflet get_terrain_leaflet get_results_leaflet
 #'             flowline flowline_points cross_section cross_section_points 
 #'             compare_long_profile xs_compare_plot_L2 
-#' @importFrom shinyWidgets updateSlimSelect updateNoUiSliderInput
+#' @importFrom shinyWidgets updateAutonumericInput
 #' @importFrom gt render_gt
 #' @noRd
 app_server <- function(input, output, session) {
@@ -207,13 +208,13 @@ app_server <- function(input, output, session) {
     print(input$channel_elevation)
     channel_poly <<- water_surface_poly(
       rem = rem, 
-      water_surface_elevation = as.numeric(input$channel_elevation), 
+      water_surface_elevation = as.numeric(req(input$channel_elevation)), 
       flowline = fl)
     print(channel_poly)
     print(input$floodplain_elevation)
     floodplain_poly <<- water_surface_poly(
       rem = rem, 
-      water_surface_elevation = as.numeric(input$floodplain_elevation), 
+      water_surface_elevation = as.numeric(req(input$floodplain_elevation)), 
       flowline = fl)
     print(floodplain_poly)
     print("process cross section --------------------------------------------")
@@ -231,7 +232,7 @@ app_server <- function(input, output, session) {
     print(xs_pts)
     print("create results map -----------------------------------------------")
     output$results_map <- renderLeaflet({
-      get_results_leaflet(fl, xs, dem)
+      get_results_leaflet(fl, xs, dem, channel_poly, floodplain_poly)
     })
     print("longitudinal profile plot ----------------------------------------")
     output$long_profile <- renderPlot({
@@ -245,24 +246,26 @@ app_server <- function(input, output, session) {
     )
     print(req(input$pick_xs))
     print("pick channel_elevation ------------------------------------------")
-    updateNumericInput(
+    updateAutonumericInput(
       session,
       inputId = "channel_elevation",
-      min = min(filter(xs_pts, Seq == req(input$pick_xs))$Detrend_DEM_Z),
-      max = max(filter(xs_pts, Seq == req(input$pick_xs))$Detrend_DEM_Z),
       value = 103, 
-      step = as.numeric(0.5)
+      options = list(
+        minimumValue = min(filter(xs_pts, Seq == req(input$pick_xs))$Detrend_DEM_Z),
+        maximumValue = max(filter(xs_pts, Seq == req(input$pick_xs))$Detrend_DEM_Z),
+        wheelStep = 0.5)
     )
-    updateNumericInput(
+    updateAutonumericInput(
       session,
       inputId = "floodplain_elevation",
-      min = min(filter(xs_pts, Seq == req(input$pick_xs))$Detrend_DEM_Z),
-      max = max(filter(xs_pts, Seq == req(input$pick_xs))$Detrend_DEM_Z),
-      value = 112, 
-      step = as.numeric(0.5)
+      value = 112,
+      options = list(
+        minuimumValue = min(filter(xs_pts, Seq == req(input$pick_xs))$Detrend_DEM_Z),
+        maximumValue = max(filter(xs_pts, Seq == req(input$pick_xs))$Detrend_DEM_Z),
+        wheelStep = 0.5)
     )
     print(input$bankfull_elevation)
-    print("cross section plot -----------------------------------------------")
+    print("create cross section plots ---------------------------------------")
     output$xs_plot_floodplain <- renderPlot({
       xs_compare_plot_L2(
         stream = "current stream",
@@ -289,6 +292,61 @@ app_server <- function(input, output, session) {
         bf_estimate = req(input$channel_elevation),
         regions = c("USA", "Eastern United States"))
     )
+    
+    observeEvent(input$channel_elevation, {
+      print("update channel_elevation ---------------------------------------")
+      show_modal_spinner(spin = "circle", text = "Re-calculating Geometry")
+      channel_poly <<- water_surface_poly(
+        rem = rem, 
+        water_surface_elevation = as.numeric(req(input$channel_elevation)), 
+        flowline = fl)
+      print(channel_poly)
+      print("cross section points classify ----------------------------------")
+      xs_pts <<- xs_pts_classify(xs_pts, channel_poly, floodplain_poly,
+                                 buffer_distance = 2)
+      xs_pts_list <- list("latest" = xs_pts)
+      print("update results_map ---------------------------------------------")
+      leafletProxy(mapId = "results_map", data = channel_poly) %>%
+        flyTo(lng  = input$results_map_center$lng, 
+              lat  = input$results_map_center$lat, 
+              zoom = input$results_map_zoom,
+              options = list(animate = FALSE)) %>%
+        removeShape(layerId = "channel_poly") %>%
+        addPolygons(
+          data = st_transform(channel_poly, crs = 4326),
+          layerId = "channel_poly",
+          color = "navy", weight = 1,
+          group = "Channel")
+      print("update cross section plots -------------------------------------")
+      output$xs_plot_floodplain <- renderPlot({
+        xs_compare_plot_L2(
+          stream = "current stream",
+          xs_number = req(input$pick_xs),
+          bankfull_elevation = req(input$channel_elevation),
+          xs_pts_list,
+          extent = "floodplain",
+          aspect_ratio = NULL)
+      })
+      output$xs_plot_channel <- renderPlot({
+        xs_compare_plot_L2(
+          stream = "current stream",
+          xs_number = req(input$pick_xs),
+          bankfull_elevation = req(input$channel_elevation),
+          xs_pts_list,
+          extent = "channel",
+          aspect_ratio = NULL)
+      })
+      print("calculate cross section dimensions -------------------------------")
+      output$dimensions_table <- render_gt(
+        xs_dimensions_table(
+          xs_pts = xs_pts,
+          xs_number = req(input$pick_xs),
+          bf_estimate = req(input$channel_elevation),
+          regions = c("USA", "Eastern United States"))
+      )
+      remove_modal_spinner()
+    })
+    
     
     nav_select(id = "main", selected = "Results", session)
     remove_modal_spinner()
