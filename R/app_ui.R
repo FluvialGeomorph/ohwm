@@ -58,13 +58,15 @@ app_ui <- function(request) {
             accordion_panel(title = "Longitudinal Profile", plotOutput("long_profile", height = "250px")),
             accordion_panel(
               title = "Cross Sections",
-              selectInput("pick_xs", label = "Select a cross section:", choices = c(1)),
-              numericInput("bankfull_elevation", "Select water level:", value = NULL),
-              # noUiSliderInput(inputId = "bankfull_elevation",
-              #                 label = "Select water level:",
-              #                 min = NULL, max = NULL,
-              #                 value = NULL),
-              plotOutput("xs_plot", height = "250px"),
+              selectInput("pick_xs", label = "Select a cross section:", 
+                            choices = c(1)),
+              splitLayout(
+                numericInput("channel_elevation", "Channel REM value:", 
+                             value = 103),
+                numericInput("floodplain_elevation", "Floodplain REM value:", 
+                             value = 112)),
+              plotOutput("xs_plot_floodplain", height = "250px"),
+              plotOutput("xs_plot_channel", height = "250px"),
               gt_output("dimensions_table")
             )
           )

@@ -13,9 +13,11 @@
 #' @importFrom leafpm addPmToolbar pmToolbarOptions
 #' @importFrom leaflet.extras addSearchOSM searchOptions
 #' @importFrom sf st_as_sf st_sfc
-#' @importFrom terra plot crs
+#' @importFrom terra plot crs ifel as.polygons disagg relate vect
+#' @importFrom tidyterra filter mutate
 #' @importFrom shinybusy show_modal_spinner remove_modal_spinner
-#' @importFrom fluvgeo sf_fix_crs get_dem detrend
+#' @importFrom fluvgeo sf_fix_crs get_dem detrend water_surface_poly 
+#'             xs_pts_classify
 #'             get_leaflet get_terrain_leaflet get_results_leaflet
 #'             flowline flowline_points cross_section cross_section_points 
 #'             compare_long_profile xs_compare_plot_L2 
@@ -24,39 +26,34 @@
 #' @noRd
 app_server <- function(input, output, session) {
   # Define reactives ##########################################################
-  # Define reach name
   reach_name <- reactiveVal({
     reach_name <- NULL
   })
-  # Define an empty cross section
   xs <- reactive({
-    xs <- data.frame(Seq = integer()) %>%
+    sf <- data.frame(Seq = integer()) %>%
       st_as_sf(geometry = st_sfc(), crs = 3857)  # ensure Web Mercator
-    return(xs)
+    return(sf)
   })
   #makeReactiveBinding("xs")       # no need, reactive created by xs_editor_ui
-  # Define an empty cross section points
   xs_pts <- reactive({
-    xs_pts <- data.frame(Seq = integer()) %>%
+    sf <- data.frame(Seq = integer()) %>%
       st_as_sf(geometry = st_sfc(), crs = 3857)  # ensure Web Mercator
-    return(xs_pts)
+    return(sf)
   })
   makeReactiveBinding("xs_pts")
   # Define an empty flowline
   fl <- reactive({
-    fl <- data.frame(ReachName = as.character()) %>%
+    sf <- data.frame(ReachName = as.character()) %>%
       st_as_sf(geometry = st_sfc(), crs = 3857)  # ensure Web Mercator
-    return(fl)
+    return(sf)
   })
   makeReactiveBinding("fl")
-  # Define an empty flowline
   fl_pts <- reactive({
-    fl_pts <- data.frame(ReachName = as.character()) %>%
+    sf <- data.frame(ReachName = as.character()) %>%
       st_as_sf(geometry = st_sfc(), crs = 3857)  # ensure Web Mercator
-    return(fl_pts)
+    return(sf)
   })
   makeReactiveBinding("fl_pts")
-  # Define an empty DEM
   dem <- reactive({
     raster <- matrix(1:25, nrow = 5, ncol = 5) %>%
       terra::rast()
@@ -64,7 +61,6 @@ app_server <- function(input, output, session) {
     return(raster)
   })
   makeReactiveBinding("dem")
-  # Define an empty REM
   rem <- reactive({
     raster <- matrix(1:25, nrow = 5, ncol = 5) %>%
       terra::rast()
@@ -72,6 +68,25 @@ app_server <- function(input, output, session) {
     return(raster)
   })
   makeReactiveBinding("rem")
+  trend <- reactive({
+    raster <- matrix(1:25, nrow = 5, ncol = 5) %>%
+      terra::rast()
+    terra::crs(raster) <- "EPSG:3857"
+    return(raster)
+  })
+  makeReactiveBinding("trend")
+  channel_poly <- reactive({
+    sf <- data.frame(ReachName = as.character()) %>%
+      st_as_sf(geometry = st_sfc(), crs = 3857)  # ensure Web Mercator
+    return(sf)
+  })
+  makeReactiveBinding("channel_poly")
+  floodplain_poly <- reactive({
+    sf <- data.frame(ReachName = as.character()) %>%
+      st_as_sf(geometry = st_sfc(), crs = 3857)  # ensure Web Mercator
+    return(sf)
+  })
+  makeReactiveBinding("floodplain_poly")
   
   # Ensure fl_editor_ui mapedit module available at app scope
   fl_editor_ui <- NULL
@@ -184,18 +199,34 @@ app_server <- function(input, output, session) {
     #save_test_data(fl_pts, "fl_pts")
     print(fl_pts)
     print("calculate REM ----------------------------------------------------")
-    rem <- detrend(dem, fl, fl_pts, buffer_distance = 1000)$rem           
+    detrend <- detrend(dem, fl, fl_pts, buffer_distance = 1000)
+    rem   <<- detrend$rem
+    trend <<- detrend$trend
     print(rem)
+    print("create channel and floodplain polys ------------------------------")
+    print(input$channel_elevation)
+    channel_poly <<- water_surface_poly(
+      rem = rem, 
+      water_surface_elevation = as.numeric(input$channel_elevation), 
+      flowline = fl)
+    print(channel_poly)
+    print(input$floodplain_elevation)
+    floodplain_poly <<- water_surface_poly(
+      rem = rem, 
+      water_surface_elevation = as.numeric(input$floodplain_elevation), 
+      flowline = fl)
+    print(floodplain_poly)
     print("process cross section --------------------------------------------")
     xs <<- cross_section(xs, fl_pts)
     print(xs)
     print("process cross section points -------------------------------------")
     station_distance = 1
     xs_pts <<- cross_section_points(xs, dem, rem, station_distance)
+    print(xs_pts)
     xs_pts <<- xs_pts %>%
       mutate(POINT_M_units = "m") %>%
-      mutate(channel = 1) %>%
-      mutate(dem_units = "ft")
+      mutate(dem_units = "ft") %>%
+      xs_pts_classify(., channel_poly, floodplain_poly, buffer_distance = 1)
     xs_pts_list <- list("latest" = xs_pts)
     print(xs_pts)
     print("create results map -----------------------------------------------")
@@ -213,42 +244,50 @@ app_server <- function(input, output, session) {
       choices = seq(min(xs_pts$Seq), max(xs_pts$Seq))
     )
     print(req(input$pick_xs))
-    print("pick bankfull_elevation ------------------------------------------")
+    print("pick channel_elevation ------------------------------------------")
     updateNumericInput(
       session,
-      inputId = "bankfull_elevation",
+      inputId = "channel_elevation",
       min = min(filter(xs_pts, Seq == req(input$pick_xs))$Detrend_DEM_Z),
       max = max(filter(xs_pts, Seq == req(input$pick_xs))$Detrend_DEM_Z),
-      value = as.integer(mean(
-        filter(xs_pts, Seq == req(input$pick_xs))$Detrend_DEM_Z
-      )),
-      step = 1
+      value = 103, 
+      step = as.numeric(0.5)
     )
-    # updateNoUiSliderInput(inputId = "bankfull_elevation",
-    #   range = c(min(filter(xs_pts, Seq == input$pick_xs)$Detrend_DEM_Z),
-    #             max(filter(xs_pts, Seq == input$pick_xs)$Detrend_DEM_Z)),
-    #   value = mean(filter(xs_pts, Seq == input$pick_xs)$Detrend_DEM_Z)
-    # )
+    updateNumericInput(
+      session,
+      inputId = "floodplain_elevation",
+      min = min(filter(xs_pts, Seq == req(input$pick_xs))$Detrend_DEM_Z),
+      max = max(filter(xs_pts, Seq == req(input$pick_xs))$Detrend_DEM_Z),
+      value = 112, 
+      step = as.numeric(0.5)
+    )
     print(input$bankfull_elevation)
     print("cross section plot -----------------------------------------------")
-    output$xs_plot <- renderPlot({
+    output$xs_plot_floodplain <- renderPlot({
       xs_compare_plot_L2(
         stream = "current stream",
         xs_number = req(input$pick_xs),
-        bankfull_elevation = req(input$bankfull_elevation),
+        bankfull_elevation = req(input$channel_elevation),
         xs_pts_list,
-        extent = "all",
-        aspect_ratio = NULL
-      )
+        extent = "floodplain",
+        aspect_ratio = NULL)
+    })
+    output$xs_plot_channel <- renderPlot({
+      xs_compare_plot_L2(
+        stream = "current stream",
+        xs_number = req(input$pick_xs),
+        bankfull_elevation = req(input$channel_elevation),
+        xs_pts_list,
+        extent = "channel",
+        aspect_ratio = NULL)
     })
     print("calculate cross section dimensions -------------------------------")
     output$dimensions_table <- render_gt(
       xs_dimensions_table(
         xs_pts = xs_pts,
         xs_number = req(input$pick_xs),
-        bf_estimate = req(input$bankfull_elevation),
-        regions = c("USA", "Eastern United States")
-      )
+        bf_estimate = req(input$channel_elevation),
+        regions = c("USA", "Eastern United States"))
     )
     
     nav_select(id = "main", selected = "Results", session)
