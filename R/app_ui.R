@@ -7,7 +7,7 @@
 #'                   accordion accordion_panel
 #' @importFrom mapedit editModUI
 #' @importFrom leaflet leafletOutput
-#' @importFrom shinyWidgets autonumericInput noUiSliderInput
+#' @importFrom shinyWidgets autonumericInput noUiSliderInput wNumbFormat
 #' prepare_slim_choices
 #' @importFrom gt gt_output
 #' 
