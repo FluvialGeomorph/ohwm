@@ -73,7 +73,8 @@ app_ui <- function(request) {
                                 update_on = "end")),
               plotOutput("xs_plot_floodplain", height = "250px"),
               plotOutput("xs_plot_channel", height = "250px"),
-              gt_output("dimensions_table")
+              gt_output("dimensions_table"),
+              textOutput("floodplain_volumes")
             )
           )
         )

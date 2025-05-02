@@ -18,7 +18,7 @@
 #' @importFrom tidyterra filter mutate
 #' @importFrom shinybusy show_modal_spinner remove_modal_spinner
 #' @importFrom fluvgeo sf_fix_crs get_dem detrend water_surface_poly 
-#'             xs_pts_classify
+#'             xs_pts_classify hydroflatten_dem floodplain_volume
 #'             get_leaflet get_terrain_leaflet get_results_leaflet
 #'             flowline flowline_points cross_section cross_section_points 
 #'             compare_long_profile xs_compare_plot_L2 
@@ -31,63 +31,56 @@ app_server <- function(input, output, session) {
     reach_name <- NULL
   })
   xs <- reactive({
-    sf <- data.frame(Seq = integer()) %>%
-      st_as_sf(geometry = st_sfc(), crs = 3857)  # ensure Web Mercator
-    return(sf)
+    empty_sf()
   })
   #makeReactiveBinding("xs")       # no need, reactive created by xs_editor_ui
   xs_pts <- reactive({
-    sf <- data.frame(Seq = integer()) %>%
-      st_as_sf(geometry = st_sfc(), crs = 3857)  # ensure Web Mercator
-    return(sf)
+    empty_sf()
   })
   makeReactiveBinding("xs_pts")
   # Define an empty flowline
   fl <- reactive({
-    sf <- data.frame(ReachName = as.character()) %>%
-      st_as_sf(geometry = st_sfc(), crs = 3857)  # ensure Web Mercator
-    return(sf)
+    empty_sf()
   })
   makeReactiveBinding("fl")
   fl_pts <- reactive({
-    sf <- data.frame(ReachName = as.character()) %>%
-      st_as_sf(geometry = st_sfc(), crs = 3857)  # ensure Web Mercator
-    return(sf)
+    empty_sf()
   })
   makeReactiveBinding("fl_pts")
   dem <- reactive({
-    raster <- matrix(1:25, nrow = 5, ncol = 5) %>%
-      terra::rast()
-    terra::crs(raster) <- "EPSG:3857"
-    return(raster)
+    empty_raster()
   })
   makeReactiveBinding("dem")
   rem <- reactive({
-    raster <- matrix(1:25, nrow = 5, ncol = 5) %>%
-      terra::rast()
-    terra::crs(raster) <- "EPSG:3857"
-    return(raster)
+    empty_raster()
   })
   makeReactiveBinding("rem")
   trend <- reactive({
-    raster <- matrix(1:25, nrow = 5, ncol = 5) %>%
-      terra::rast()
-    terra::crs(raster) <- "EPSG:3857"
-    return(raster)
+    empty_raster()
   })
   makeReactiveBinding("trend")
   channel_poly <- reactive({
-    sf <- data.frame(ReachName = as.character()) %>%
-      st_as_sf(geometry = st_sfc(), crs = 3857)  # ensure Web Mercator
-    return(sf)
+    empty_sf()
   })
   makeReactiveBinding("channel_poly")
   floodplain_poly <- reactive({
-    sf <- data.frame(ReachName = as.character()) %>%
-      st_as_sf(geometry = st_sfc(), crs = 3857)  # ensure Web Mercator
-    return(sf)
+    empty_sf()
   })
   makeReactiveBinding("floodplain_poly")
+  channel_ws <- reactive({
+    empty_raster()
+  })
+  makeReactiveBinding("channel_ws")
+  floodplain_ws <- reactive({
+    empty_raster()
+  })
+  makeReactiveBinding("floodplain_ws")
+  channel_vol <- reactiveVal({
+    channel_vol <- NULL
+  })
+  floodplain_vol <- reactiveVal({
+    floodplain_vol <- NULL
+  })
   
   # Ensure fl_editor_ui mapedit module available at app scope
   fl_editor_ui <- NULL
@@ -124,7 +117,7 @@ app_server <- function(input, output, session) {
     })
   })
   
-  # Draw Flowline ###############################################################
+  # Draw Flowline #############################################################
   observeEvent(input$draw_flowline, {
     show_modal_spinner(spin = "circle", text = "Retrieving Terrain")
     # get finished xs
@@ -230,6 +223,21 @@ app_server <- function(input, output, session) {
       xs_pts_classify(., channel_poly, floodplain_poly, buffer_distance = 2)
     xs_pts_list <- list("latest" = xs_pts)
     print(xs_pts)
+    print("create channel water surface -------------------------------------")
+    print(input$channel_elevation)
+    channel_ws <<- trend + (as.numeric(input$channel_elevation) - 100)
+    print(channel_ws)
+    print("create floodplain water surface ----------------------------------")
+    print(input$floodplain_elevation)
+    floodplain_ws <<- trend + (as.numeric(input$floodplain_elevation) - 100)
+    print(floodplain_ws)
+    print("calculate floodplain volumes -------------------------------------")
+    channel_vol <<- floodplain_volume(dem = dem, 
+                                      watersurface = channel_ws)
+    floodplain_vol <<- floodplain_volume(dem = dem, 
+                                         watersurface = floodplain_ws)
+    print(paste("channel vol: ", base::round(channel_vol, 2), 
+                "floodplain vol: ", base::round(floodplain_vol, 2)))
     print("create results map -----------------------------------------------")
     output$results_map <- renderLeaflet({
       get_results_leaflet(fl, xs, dem, channel_poly, floodplain_poly)
@@ -302,7 +310,13 @@ app_server <- function(input, output, session) {
         bf_estimate = req(input$channel_elevation),
         regions = c("USA", "Eastern United States"))
     )
+    output$floodplain_volumes <- renderText(
+      paste("Channel volume: ", channel_vol, "\n",
+            "Floodplain volume: ", floodplain_vol, "\n",
+            "Floodplain storage: ", floodplain_vol - channel_vol)
+    )
     
+    # Channel Slider ##########################################################
     observeEvent(input$channel_elevation, {
       show_modal_spinner(spin = "circle", text = "Re-calculating Geometry")
       print("update channel_elevation ---------------------------------------")
@@ -359,6 +373,7 @@ app_server <- function(input, output, session) {
       remove_modal_spinner()
     })
     
+    # Floodplain Slider #######################################################
     observeEvent(input$floodplain_elevation, {
       show_modal_spinner(spin = "circle", text = "Re-calculating Geometry")
       print("update floodplain_elevation ---------------------------------------")
@@ -416,7 +431,7 @@ app_server <- function(input, output, session) {
     
     nav_select(id = "main", selected = "Results", session)
     remove_modal_spinner()
-  })
+  }) # End View Results #######################################################
   
   
   # Instructions ##############################################################
