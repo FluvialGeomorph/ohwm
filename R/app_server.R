@@ -238,15 +238,7 @@ app_server <- function(input, output, session) {
                                          watersurface = floodplain_ws)
     print(paste("channel vol: ", base::round(channel_vol, 2), 
                 "floodplain vol: ", base::round(floodplain_vol, 2)))
-    print("create results map -----------------------------------------------")
-    output$results_map <- renderLeaflet({
-      get_results_leaflet(fl, xs, dem, channel_poly, floodplain_poly)
-    })
-    print("longitudinal profile plot ----------------------------------------")
-    output$long_profile <- renderPlot({
-      fl_pts_list <- list("latest" = fl_pts)
-      compare_long_profile(stream = "current stream", fl_pts_list)
-    })
+    # Update selectors ########################################################
     print("pick cross section -----------------------------------------------")
     updateSelectInput(
       session, "pick_xs", 
@@ -257,11 +249,11 @@ app_server <- function(input, output, session) {
     print(input$channel_elevation)
     #rem_min <- 100
     rem_min <- round(min(filter(xs_pts, 
-                           Seq == as.numeric(input$pick_xs))$Detrend_DEM_Z), 
-                      1) + 0.1
+                                Seq == as.numeric(input$pick_xs))$Detrend_DEM_Z), 
+                     1) + 0.1
     rem_min <- ifelse(rem_min > 100, rem_min, 100)
     rem_max <- round(max(filter(xs_pts, 
-                           Seq == as.numeric(input$pick_xs))$Detrend_DEM_Z),
+                                Seq == as.numeric(input$pick_xs))$Detrend_DEM_Z),
                      0) - 1
     print(paste0("range = ", rem_min, " - ", rem_max))
     updateNoUiSliderInput(
@@ -283,6 +275,16 @@ app_server <- function(input, output, session) {
         maximumValue = max(filter(xs_pts, Seq == req(input$pick_xs))$Detrend_DEM_Z),
         wheelStep = 0.5)
     )
+    # Create outputs ##########################################################
+    print("create results map -----------------------------------------------")
+    output$results_map <- renderLeaflet({
+      get_results_leaflet(fl, xs, dem, channel_poly, floodplain_poly)
+    })
+    print("longitudinal profile plot ----------------------------------------")
+    output$long_profile <- renderPlot({
+      fl_pts_list <- list("latest" = fl_pts)
+      compare_long_profile(stream = "current stream", fl_pts_list)
+    })
     print("create cross section plots ---------------------------------------")
     output$xs_plot_floodplain <- renderPlot({
       xs_compare_plot_L2(
@@ -310,10 +312,8 @@ app_server <- function(input, output, session) {
         bf_estimate = req(input$channel_elevation),
         regions = c("USA", "Eastern United States"))
     )
-    output$floodplain_volumes <- renderText(
-      paste("Channel volume: ", channel_vol, "\n",
-            "Floodplain volume: ", floodplain_vol, "\n",
-            "Floodplain storage: ", floodplain_vol - channel_vol)
+    output$floodplain_volumes <- render_gt(
+      floodplain_vol_table(channel_vol, floodplain_vol)
     )
     
     # Channel Slider ##########################################################
