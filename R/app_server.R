@@ -9,7 +9,7 @@
 #' @importFrom leaflet leaflet addProviderTiles setView addLayersControl 
 #'                     renderLeaflet leafletProxy leafletOptions leafletCRS
 #'                     removeShape addPolygons flyTo
-#' @importFrom dplyr %>% bind_rows mutate select filter
+#' @importFrom dplyr %>% bind_rows mutate select filter distinct
 #' @importFrom mapedit editMod
 #' @importFrom leafpm addPmToolbar pmToolbarOptions
 #' @importFrom leaflet.extras addSearchOSM searchOptions
@@ -22,6 +22,7 @@
 #'             get_leaflet get_terrain_leaflet get_results_leaflet
 #'             flowline flowline_points cross_section cross_section_points 
 #'             compare_long_profile xs_compare_plot_L2 
+#'             cross_section_dimensions_L2
 #' @importFrom shinyWidgets updateAutonumericInput updateNoUiSliderInput
 #' @importFrom gt render_gt
 #' @noRd
@@ -34,6 +35,10 @@ app_server <- function(input, output, session) {
     empty_sf()
   })
   #makeReactiveBinding("xs")       # no need, reactive created by xs_editor_ui
+  xs_dims_l2 <- reactive({
+    empty_sf()
+  })
+  makeReactiveBinding("xs_dims_l2")
   xs_pts <- reactive({
     empty_sf()
   })
@@ -238,6 +243,16 @@ app_server <- function(input, output, session) {
                                          watersurface = floodplain_ws)
     print(paste("channel vol: ", base::round(channel_vol, 2), 
                 "floodplain vol: ", base::round(floodplain_vol, 2)))
+    print("calculate L2 xs dimensions ---------------------------------------")
+    xs_dims_l2 <<- xs %>%
+      cross_section_dimensions_L2(
+        xs_points = xs_pts,
+        bankfull_elevation = as.numeric(input$channel_elevation),
+        lead_n = 1,
+        use_smoothing = FALSE,
+        vert_units = "ft") %>%
+      distinct(Seq, .keep_all = TRUE)
+    print(xs_dims_l2)
     # Update selectors ########################################################
     print("pick cross section -----------------------------------------------")
     updateSelectInput(
@@ -315,6 +330,7 @@ app_server <- function(input, output, session) {
     output$floodplain_volumes <- render_gt(
       floodplain_vol_table(channel_vol, floodplain_vol)
     )
+    remove_modal_spinner()
     
     # Channel Slider ##########################################################
     observeEvent(input$channel_elevation, {
@@ -330,15 +346,25 @@ app_server <- function(input, output, session) {
       xs_pts <<- xs_pts_classify(xs_pts, channel_poly, floodplain_poly,
                                  buffer_distance = 2)
       xs_pts_list <- list("latest" = xs_pts)
-      print("create channel water surface -------------------------------------")
+      print("create channel water surface -----------------------------------")
       print(input$channel_elevation)
       channel_ws <<- trend + (as.numeric(input$channel_elevation) - 100)
       print(channel_ws)
-      print("calculate floodplain volumes -------------------------------------")
+      print("calculate floodplain volumes -----------------------------------")
       channel_vol <<- floodplain_volume(dem = dem, 
                                         watersurface = channel_ws)
       print(paste("channel vol: ", base::round(channel_vol, 2), 
                   "floodplain vol: ", base::round(floodplain_vol, 2)))
+      print("calculate L2 xs dimensions -------------------------------------")
+      xs_dims_l2 <<- xs %>%
+        cross_section_dimensions_L2(
+          xs_points = xs_pts,
+          bankfull_elevation = as.numeric(input$channel_elevation),
+          lead_n = 1,
+          use_smoothing = FALSE,
+          vert_units = "ft") %>%
+        distinct(Seq, .keep_all = TRUE)
+      print(xs_dims_l2)
       print("update results_map ---------------------------------------------")
       leafletProxy(mapId = "results_map", data = channel_poly) %>%
         flyTo(lng  = input$results_map_center$lng, 
@@ -450,7 +476,7 @@ app_server <- function(input, output, session) {
     })
     
     nav_select(id = "main", selected = "Results", session)
-    remove_modal_spinner()
+    #remove_modal_spinner()
   }) # End View Results #######################################################
   
   
