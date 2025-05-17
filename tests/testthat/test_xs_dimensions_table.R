@@ -37,5 +37,6 @@ test_that("check for valid flowline points", {
     bf_estimate = bf_estimate,
     regions = regions
   )
+  #t1
   expect_true("gt_tbl" %in% class(t1))
 })
