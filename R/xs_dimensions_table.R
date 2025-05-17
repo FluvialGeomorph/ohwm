@@ -16,9 +16,9 @@
 #'
 #' @return a `gt` object
 #'
+#' @importFrom fluvgeo xs_dimensions
 #' @importFrom dplyr filter .data distinct select mutate recode across arrange
-#' @importFrom gt gt fmt_number cols_label_with tab_options px
-#' @importFrom tools toTitleCase
+#' @importFrom gt gt fmt_number cols_label tab_options px
 #'
 xs_dimensions_table <- function(xs_pts, xs_number, bf_estimate, regions) {
   # Get the channel portion of the current cross section
