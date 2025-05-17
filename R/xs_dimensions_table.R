@@ -16,8 +16,9 @@
 #'
 #' @return a `gt` object
 #'
-#' @importFrom dplyr filter .data distinct select mutate across recode arrange
-#' @importFrom gt gt cols_label_with
+#' @importFrom dplyr filter .data distinct select mutate across arrange
+#' @importFrom gt gt fmt_number cols_label_with
+#' @importFrom tools toTitleCase
 #'
 xs_dimensions_table <- function(xs_pts, xs_number, bf_estimate, regions) {
   # Get the channel portion of the current cross section
@@ -41,21 +42,19 @@ xs_dimensions_table <- function(xs_pts, xs_number, bf_estimate, regions) {
       "bankfull_elevation",
       "discharge"
     )) %>%
-    mutate(across(2:5, \(x) round(x, 1))) %>%
     mutate(xs_type = recode(xs_type, 
                             "DEM derived cross section" = "DEM derived")) %>%
     arrange(.data$xs_type) %>%
     arrange(match(xs_type, c("DEM derived"))) %>%
     filter(xs_type == "DEM derived") %>%
-    select(-drainage_area)
+    select(-c(drainage_area, xs_type))
   
-  gt_table <-
-    dims_table |>
-    gt::gt() |>
-    gt::cols_label_with(
-      fn = function(x)
-        tools::toTitleCase(gsub("_", " ", x))
-    )
-  
-  return(dims_table)
+  gt_table <- dims_table |>
+    gt() |>
+    cols_label(xs_area = "Area (sq_ft)") |>
+    cols_label(xs_width = "Width (ft)") |>
+    cols_label(xs_depth = "Mean Depth (ft)") |>
+    fmt_number(columns = everything(), decimals = 1)
+
+  return(gt_table)
 }
