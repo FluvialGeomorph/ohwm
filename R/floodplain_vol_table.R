@@ -23,8 +23,13 @@ floodplain_vol_table <- function(channel_vol, floodplain_vol) {
     gt(vols_tbl,
        rowname_col = "features") |>
     tab_stubhead(label = "Features") |>
-    cols_label(volume = html("Volume, <br>m<sup>3</sup>")) |>
-    fmt_number(columns = volume, decimals = 0)
-  
+    cols_label(volume = html("Volume (m<sup>3</sup>)")) |>
+    fmt_number(columns = volume, decimals = 0) |>
+    tab_options(
+      column_labels.font.weight = "bold",
+      table.font.size = "small",
+      column_labels.padding = px(2),
+      data_row.padding = px(1))
+  #vol_table
   return(vol_table)
 }
