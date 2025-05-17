@@ -23,6 +23,7 @@ Imports:
     DT,
     glue,
     golem,
+    pkgload,
     shiny
 Suggests: 
     spelling,
