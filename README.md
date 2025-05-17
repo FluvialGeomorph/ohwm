@@ -12,8 +12,8 @@ An R Shiny app for remotely identifying stream Ordinary High Water Marks
 
 [![Lifecycle:
 experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
-[![packageversion](https://img.shields.io/badge/Package%20version-2025.04.12-orange.svg?style=flat-square)](commits/main)
-[![Last-changedate](https://img.shields.io/badge/last%20change-2025--04--12-yellowgreen.svg)](/commits/main)
+[![packageversion](https://img.shields.io/badge/Package%20version-2025.05.17-orange.svg?style=flat-square)](commits/main)
+[![Last-changedate](https://img.shields.io/badge/last%20change-2025--05--17-yellowgreen.svg)](/commits/main)
 [![Licence](https://img.shields.io/badge/licence-CC0-blue.svg)](http://choosealicense.com/licenses/cc0-1.0/)
 <!-- badges: end -->
 
