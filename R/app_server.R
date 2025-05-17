@@ -330,13 +330,20 @@ app_server <- function(input, output, session) {
       xs_pts <<- xs_pts_classify(xs_pts, channel_poly, floodplain_poly,
                                  buffer_distance = 2)
       xs_pts_list <- list("latest" = xs_pts)
+      print("create channel water surface -------------------------------------")
+      print(input$channel_elevation)
+      channel_ws <<- trend + (as.numeric(input$channel_elevation) - 100)
+      print(channel_ws)
+      print("calculate floodplain volumes -------------------------------------")
+      channel_vol <<- floodplain_volume(dem = dem, 
+                                        watersurface = channel_ws)
+      print(paste("channel vol: ", base::round(channel_vol, 2), 
+                  "floodplain vol: ", base::round(floodplain_vol, 2)))
       print("update results_map ---------------------------------------------")
       leafletProxy(mapId = "results_map", data = channel_poly) %>%
         flyTo(lng  = input$results_map_center$lng, 
               lat  = input$results_map_center$lat, 
-              zoom = input$results_map_zoom #, 
-              #options = list(animate = FALSE)
-              ) %>%
+              zoom = input$results_map_zoom) %>%
         removeShape(layerId = "channel_poly") %>%
         addPolygons(
           data = st_transform(channel_poly, crs = 4326),
@@ -370,6 +377,9 @@ app_server <- function(input, output, session) {
           bf_estimate = req(input$channel_elevation),
           regions = c("USA", "Eastern United States"))
       )
+      output$floodplain_volumes <- render_gt(
+        floodplain_vol_table(channel_vol, floodplain_vol)
+      )
       remove_modal_spinner()
     })
     
@@ -386,13 +396,20 @@ app_server <- function(input, output, session) {
       xs_pts <<- xs_pts_classify(xs_pts, channel_poly, floodplain_poly,
                                  buffer_distance = 2)
       xs_pts_list <- list("latest" = xs_pts)
+      print("create floodplain water surface ----------------------------------")
+      print(input$floodplain_elevation)
+      floodplain_ws <<- trend + (as.numeric(input$floodplain_elevation) - 100)
+      print(floodplain_ws)
+      print("calculate floodplain volumes -------------------------------------")
+      floodplain_vol <<- floodplain_volume(dem = dem, 
+                                           watersurface = floodplain_ws)
+      print(paste("channel vol: ", base::round(channel_vol, 2), 
+                  "floodplain vol: ", base::round(floodplain_vol, 2)))
       print("update results_map ---------------------------------------------")
       leafletProxy(mapId = "results_map", data = floodplain_poly) %>%
         flyTo(lng  = input$results_map_center$lng, 
               lat  = input$results_map_center$lat, 
-              zoom = input$results_map_zoom #, 
-              #options = list(animate = FALSE)
-        ) %>%
+              zoom = input$results_map_zoom) %>%
         removeShape(layerId = "floodplain_poly") %>%
         addPolygons(
           data = st_transform(floodplain_poly, crs = 4326),
@@ -425,6 +442,9 @@ app_server <- function(input, output, session) {
           xs_number = req(input$pick_xs),
           bf_estimate = req(input$channel_elevation),
           regions = c("USA", "Eastern United States"))
+      )
+      output$floodplain_volumes <- render_gt(
+        floodplain_vol_table(channel_vol, floodplain_vol)
       )
       remove_modal_spinner()
     })
