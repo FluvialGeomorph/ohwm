@@ -48,7 +48,7 @@ golem::add_shinyappsio_file()
 ## Deploy to Posit Connect or ShinyApps.io ----
 
 ## Add/update manifest file (optional; for Git backed deployment on Posit )
-#rsconnect::writeManifest()
+rsconnect::writeManifest()
 
 rsconnect::deployApp()
 
