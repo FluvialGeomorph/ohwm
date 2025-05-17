@@ -18,13 +18,30 @@ License: file LICENSE
 URL: https://github.com/FluvialGeomorph/ohwm
 BugReports: https://github.com/FluvialGeomorph/ohwm/issues
 Imports: 
+    assertthat,
     attempt,
+    bslib,
     config,
+    dplyr,
     DT,
+    fluvgeo (>= 2025.5.3),
     glue,
     golem,
+    gt,
+    htmltools,
+    leaflet,
+    leaflet.extras,
+    leafpm,
+    mapedit,
     pkgload,
-    shiny
+    purrr,
+    sf,
+    shiny,
+    shinybusy,
+    shinyWidgets,
+    terra,
+    tibble,
+    tidyterra
 Suggests: 
     spelling,
     testthat (>= 3.0.0)
@@ -33,3 +50,5 @@ LazyData: true
 RoxygenNote: 7.3.2
 Config/testthat/edition: 3
 Language: en-US
+Remotes: 
+    FluvialGeomorph/fluvgeo@*release

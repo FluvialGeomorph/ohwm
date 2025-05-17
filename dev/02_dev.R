@@ -17,6 +17,23 @@
 ## Amend DESCRIPTION with dependencies read from package code parsing
 ## install.packages('attachment') # if needed.
 #attachment::att_amend_desc()
+usethis::use_package("assertthat")
+usethis::use_package("bslib")
+usethis::use_package("dplyr")
+usethis::use_dev_package("fluvgeo", remote = "FluvialGeomorph/fluvgeo@*release")
+usethis::use_package("gt")
+usethis::use_package("htmltools")
+usethis::use_package("leaflet")
+usethis::use_package("leaflet.extras")
+usethis::use_package("leafpm")
+usethis::use_package("mapedit")
+usethis::use_package("purrr")
+usethis::use_package("sf")
+usethis::use_package("shinyWidgets")
+usethis::use_package("shinybusy")
+usethis::use_package("terra")
+usethis::use_package("tibble")
+usethis::use_package("tidyterra")
 
 ## Add modules ----
 ## Create a module infrastructure in R/
