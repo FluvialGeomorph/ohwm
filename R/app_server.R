@@ -286,8 +286,10 @@ app_server <- function(input, output, session) {
       inputId = "floodplain_elevation",
       value = 112,
       options = list(
-        minuimumValue = min(filter(xs_pts, Seq == req(input$pick_xs))$Detrend_DEM_Z),
-        maximumValue = max(filter(xs_pts, Seq == req(input$pick_xs))$Detrend_DEM_Z),
+        minuimumValue = min(filter(xs_pts, 
+                                   Seq == req(input$pick_xs))$Detrend_DEM_Z),
+        maximumValue = max(filter(xs_pts, 
+                                  Seq == req(input$pick_xs))$Detrend_DEM_Z),
         wheelStep = 0.5)
     )
     # Create outputs ##########################################################
@@ -319,13 +321,13 @@ app_server <- function(input, output, session) {
         extent = "channel",
         aspect_ratio = NULL)
     })
-    print("calculate cross section dimensions -------------------------------")
-    output$dimensions_table <- render_gt(
-      xs_dimensions_table(
+    print("calculate cross section discharge --------------------------------")
+    output$discharge_table <- render_gt(
+      xs_discharge_table(
         xs_pts = xs_pts,
         xs_number = req(input$pick_xs),
         bf_estimate = req(input$channel_elevation),
-        regions = c("USA", "Eastern United States"))
+        mannings_n = as.numeric(input$mannings_n))
     )
     output$floodplain_volumes <- render_gt(
       floodplain_vol_table(channel_vol, floodplain_vol)
@@ -395,13 +397,13 @@ app_server <- function(input, output, session) {
           extent = "channel",
           aspect_ratio = NULL)
       })
-      print("update cross section dimensions -------------------------------")
-      output$dimensions_table <- render_gt(
-        xs_dimensions_table(
+      print("update cross section discharge ---------------------------------")
+      output$discharge_table <- render_gt(
+        xs_discharge_table(
           xs_pts = xs_pts,
           xs_number = req(input$pick_xs),
           bf_estimate = req(input$channel_elevation),
-          regions = c("USA", "Eastern United States"))
+          mannings_n = as.numeric(input$mannings_n))
       )
       output$floodplain_volumes <- render_gt(
         floodplain_vol_table(channel_vol, floodplain_vol)
@@ -412,7 +414,7 @@ app_server <- function(input, output, session) {
     # Floodplain Slider #######################################################
     observeEvent(input$floodplain_elevation, {
       show_modal_spinner(spin = "circle", text = "Re-calculating Geometry")
-      print("update floodplain_elevation ---------------------------------------")
+      print("update floodplain_elevation ------------------------------------")
       print(req(input$floodplain_elevation))
       floodplain_poly <<- water_surface_poly(
         rem = rem, 
@@ -422,11 +424,11 @@ app_server <- function(input, output, session) {
       xs_pts <<- xs_pts_classify(xs_pts, channel_poly, floodplain_poly,
                                  buffer_distance = 2)
       xs_pts_list <- list("latest" = xs_pts)
-      print("create floodplain water surface ----------------------------------")
+      print("create floodplain water surface --------------------------------")
       print(input$floodplain_elevation)
       floodplain_ws <<- trend + (as.numeric(input$floodplain_elevation) - 100)
       print(floodplain_ws)
-      print("calculate floodplain volumes -------------------------------------")
+      print("calculate floodplain volumes -----------------------------------")
       floodplain_vol <<- floodplain_volume(dem = dem, 
                                            watersurface = floodplain_ws)
       print(paste("channel vol: ", base::round(channel_vol, 2), 
@@ -461,13 +463,13 @@ app_server <- function(input, output, session) {
           extent = "channel",
           aspect_ratio = NULL)
       })
-      print("update cross section dimensions -------------------------------")
-      output$dimensions_table <- render_gt(
-        xs_dimensions_table(
+      print("update cross section discharge ---------------------------------")
+      output$discharge_table <- render_gt(
+        xs_discharge_table(
           xs_pts = xs_pts,
           xs_number = req(input$pick_xs),
           bf_estimate = req(input$channel_elevation),
-          regions = c("USA", "Eastern United States"))
+          mannings_n = as.numeric(input$mannings_n))
       )
       output$floodplain_volumes <- render_gt(
         floodplain_vol_table(channel_vol, floodplain_vol)
@@ -475,8 +477,21 @@ app_server <- function(input, output, session) {
       remove_modal_spinner()
     })
     
+    # Manning's n update ######################################################
+    observeEvent(input$mannings_n, {
+      show_modal_spinner(spin = "circle", text = "Re-calculating Geometry")
+      print("update cross section discharge ---------------------------------")
+      output$discharge_table <- render_gt(
+        xs_discharge_table(
+          xs_pts = xs_pts,
+          xs_number = req(input$pick_xs),
+          bf_estimate = req(input$channel_elevation),
+          mannings_n = as.numeric(input$mannings_n))
+      )
+      remove_modal_spinner()
+    })
+    
     nav_select(id = "main", selected = "Results", session)
-    #remove_modal_spinner()
   }) # End View Results #######################################################
   
   

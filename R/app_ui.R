@@ -17,7 +17,7 @@ app_ui <- function(request) {
     golem_add_external_resources(),
     
     page_navbar(
-      title = "Tiered Assessment",
+      title = "FluvialGeomorph Tiered Assessment",
       id = "main",
       theme = bs_theme(bootswatch = "cerulean", version = 5),
       
@@ -54,12 +54,14 @@ app_ui <- function(request) {
           width = "50%",
           accordion(
             id = "Results",
-            open = c("Cross Sections"),
-            accordion_panel(title = "Longitudinal Profile", plotOutput("long_profile", height = "250px")),
+            open = c("Cross Sections", "Channel Discharge"),
+            accordion_panel(
+              title = "Longitudinal Profile", 
+              plotOutput("long_profile", height = "250px")),
             accordion_panel(
               title = "Cross Sections",
               selectInput("pick_xs", label = "Select a cross section:", 
-                            choices = c(1)),
+                          choices = c(1)),
               splitLayout(
                 noUiSliderInput("channel_elevation", "Channel REM:",
                                 min = 100, max = 130, value = 103, 
@@ -71,10 +73,26 @@ app_ui <- function(request) {
                                 format = wNumbFormat(decimals = 1),
                                 orientation = "horizontal", 
                                 update_on = "end")),
-              plotOutput("xs_plot_floodplain", height = "250px"),
               plotOutput("xs_plot_channel", height = "250px"),
-              gt_output("dimensions_table"),
+              plotOutput("xs_plot_floodplain", height = "250px"),
               gt_output("floodplain_volumes")
+            ),
+            accordion_panel(
+              title = "Channel Discharge",
+              selectInput(
+                inputId = "mannings_n", 
+                label = "Select the Manning's n coefficient:",
+                choices = c("(a) Clean, straight, no deep pools (n = 0.030)" = 0.030,
+                            "(b) Same as (a), but more stones and weeds (n = 0.035)" = 0.035,
+                            "(c) Clean, winding, some pools and shoals (n = 0.040)" = 0.040,
+                            "(d) Same as (c), but some weeds and stones (n = 0.045)" = 0.045,
+                            "(e) Same as (c), at lower stages, with less effective slopes and sections (n = 0.048)" = 0.048,
+                            "(f) Same as (d), but more stones (n = 0.050)" = 0.050,
+                            "(g) Sluggish reaches, weedy, deep pools (n = 0.070)" = 0.070,
+                            "(h) Very weedy reaches, seep pools or floodways with heavy stands of timber and underbrush (n = 0.100)" = 0.100)
+                ),
+              withMathJax("$$Q = \\frac{1.486}{n} A R ^\\frac{2}{3} S^\\frac{1}{2}$$"),
+              gt_output("discharge_table")
             )
           )
         )
