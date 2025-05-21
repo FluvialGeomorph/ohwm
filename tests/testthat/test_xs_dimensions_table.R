@@ -1,4 +1,4 @@
-test_that("check for valid flowline points", {
+test_that("check for xs dimensions table", {
   xs_mapedit <- sf::st_read(system.file("extdata", "shiny", "xs_mapedit.shp",
                                         package = "fluvgeodata"), quiet = TRUE)
   xs_fix <- sf_fix_crs(xs_mapedit)
