@@ -321,17 +321,26 @@ app_server <- function(input, output, session) {
         extent = "channel",
         aspect_ratio = NULL)
     })
-    print("calculate cross section discharge --------------------------------")
-    output$discharge_table <- render_gt(
+    print("calculate volumes ------------------------------------------------")
+    output$floodplain_volumes <- render_gt(
+      floodplain_vol_table(channel_vol, floodplain_vol)
+    )
+    print("calculate discharge ----------------------------------------------")
+    output$channel_discharge <- render_gt(
       xs_discharge_table(
         xs_pts = xs_pts,
         xs_number = req(input$pick_xs),
         bf_estimate = req(input$channel_elevation),
-        mannings_n = as.numeric(input$mannings_n))
+        mannings_n = as.numeric(input$channel_mannings))
     )
-    output$floodplain_volumes <- render_gt(
-      floodplain_vol_table(channel_vol, floodplain_vol)
+    output$floodplain_discharge <- render_gt(
+      xs_discharge_table(
+        xs_pts = xs_pts,
+        xs_number = req(input$pick_xs),
+        bf_estimate = req(input$floodplain_elevation),
+        mannings_n = as.numeric(input$floodplain_mannings))
     )
+    
     remove_modal_spinner()
     
     # Channel Slider ##########################################################
@@ -397,13 +406,13 @@ app_server <- function(input, output, session) {
           extent = "channel",
           aspect_ratio = NULL)
       })
-      print("update cross section discharge ---------------------------------")
-      output$discharge_table <- render_gt(
+      print("update discharge -----------------------------------------------")
+      output$channel_discharge <- render_gt(
         xs_discharge_table(
           xs_pts = xs_pts,
           xs_number = req(input$pick_xs),
           bf_estimate = req(input$channel_elevation),
-          mannings_n = as.numeric(input$mannings_n))
+          mannings_n = as.numeric(input$channel_mannings))
       )
       output$floodplain_volumes <- render_gt(
         floodplain_vol_table(channel_vol, floodplain_vol)
@@ -463,13 +472,13 @@ app_server <- function(input, output, session) {
           extent = "channel",
           aspect_ratio = NULL)
       })
-      print("update cross section discharge ---------------------------------")
-      output$discharge_table <- render_gt(
+      print("update discharge -----------------------------------------------")
+      output$floodplain_discharge <- render_gt(
         xs_discharge_table(
           xs_pts = xs_pts,
           xs_number = req(input$pick_xs),
-          bf_estimate = req(input$channel_elevation),
-          mannings_n = as.numeric(input$mannings_n))
+          bf_estimate = req(input$floodplain_elevation),
+          mannings_n = as.numeric(input$floodplain_mannings))
       )
       output$floodplain_volumes <- render_gt(
         floodplain_vol_table(channel_vol, floodplain_vol)
@@ -478,15 +487,27 @@ app_server <- function(input, output, session) {
     })
     
     # Manning's n update ######################################################
-    observeEvent(input$mannings_n, {
+    observeEvent(input$channel_mannings, {
       show_modal_spinner(spin = "circle", text = "Re-calculating Geometry")
-      print("update cross section discharge ---------------------------------")
-      output$discharge_table <- render_gt(
+      print("update discharge -----------------------------------------------")
+      output$channel_discharge <- render_gt(
         xs_discharge_table(
           xs_pts = xs_pts,
           xs_number = req(input$pick_xs),
           bf_estimate = req(input$channel_elevation),
-          mannings_n = as.numeric(input$mannings_n))
+          mannings_n = as.numeric(input$channel_mannings))
+      )
+      remove_modal_spinner()
+    })
+    observeEvent(input$floodplain_mannings, {
+      show_modal_spinner(spin = "circle", text = "Re-calculating Geometry")
+      print("update discharge -----------------------------------------------")
+      output$floodplain_discharge <- render_gt(
+        xs_discharge_table(
+          xs_pts = xs_pts,
+          xs_number = req(input$pick_xs),
+          bf_estimate = req(input$floodplain_elevation),
+          mannings_n = as.numeric(input$floodplain_mannings))
       )
       remove_modal_spinner()
     })

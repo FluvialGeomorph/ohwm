@@ -4,7 +4,7 @@
 #'     DO NOT REMOVE.
 #' @import shiny
 #' @importFrom bslib page_navbar nav_panel layout_sidebar sidebar bs_theme
-#'                   accordion accordion_panel
+#'                   accordion accordion_panel layout_columns card card_header
 #' @importFrom mapedit editModUI
 #' @importFrom leaflet leafletOutput
 #' @importFrom shinyWidgets autonumericInput noUiSliderInput wNumbFormat
@@ -13,6 +13,16 @@
 #' 
 #' @noRd
 app_ui <- function(request) {
+  mannings_choices <- c(
+    "(a) Clean, straight, no deep pools (n = 0.030)" = 0.030,
+    "(b) Same as (a), but more stones and weeds (n = 0.035)" = 0.035,
+    "(c) Clean, winding, some pools and shoals (n = 0.040)" = 0.040,
+    "(d) Same as (c), but some weeds and stones (n = 0.045)" = 0.045,
+    "(e) Same as (c), at lower stages, with less effective slopes and sections (n = 0.048)" = 0.048,
+    "(f) Same as (d), but more stones (n = 0.050)" = 0.050,
+    "(g) Sluggish reaches, weedy, deep pools (n = 0.070)" = 0.070,
+    "(h) Very weedy reaches, seep pools or floodways with heavy stands of timber and underbrush (n = 0.100)" = 0.100)
+  
   tagList(
     golem_add_external_resources(),
     
@@ -54,7 +64,7 @@ app_ui <- function(request) {
           width = "50%",
           accordion(
             id = "Results",
-            open = c("Cross Sections", "Channel Discharge"),
+            open = c("Cross Sections", "Discharge"),
             accordion_panel(
               title = "Longitudinal Profile", 
               plotOutput("long_profile", height = "250px")),
@@ -78,21 +88,26 @@ app_ui <- function(request) {
               gt_output("floodplain_volumes")
             ),
             accordion_panel(
-              title = "Channel Discharge",
-              selectInput(
-                inputId = "mannings_n", 
-                label = "Select the Manning's n coefficient:",
-                choices = c("(a) Clean, straight, no deep pools (n = 0.030)" = 0.030,
-                            "(b) Same as (a), but more stones and weeds (n = 0.035)" = 0.035,
-                            "(c) Clean, winding, some pools and shoals (n = 0.040)" = 0.040,
-                            "(d) Same as (c), but some weeds and stones (n = 0.045)" = 0.045,
-                            "(e) Same as (c), at lower stages, with less effective slopes and sections (n = 0.048)" = 0.048,
-                            "(f) Same as (d), but more stones (n = 0.050)" = 0.050,
-                            "(g) Sluggish reaches, weedy, deep pools (n = 0.070)" = 0.070,
-                            "(h) Very weedy reaches, seep pools or floodways with heavy stands of timber and underbrush (n = 0.100)" = 0.100)
-                ),
+              title = "Discharge",
               withMathJax("$$Q = \\frac{1.486}{n} A R ^\\frac{2}{3} S^\\frac{1}{2}$$"),
-              gt_output("discharge_table")
+              layout_columns(
+                card(
+                  card_header("Channel"),
+                  selectInput(
+                    inputId = "channel_mannings", 
+                    label = "Set Manning's n:",
+                    choices = mannings_choices),
+                  gt_output("channel_discharge")
+                ), 
+                card(
+                  card_header("Floodplain"),
+                  selectInput(
+                    inputId = "floodplain_mannings", 
+                    label = "Set Manning's n:",
+                    choices = mannings_choices),
+                  gt_output("floodplain_discharge")
+                )
+              )
             )
           )
         )
