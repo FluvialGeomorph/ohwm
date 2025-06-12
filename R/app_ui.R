@@ -20,7 +20,7 @@ app_ui <- function(request) {
     "(d) Same as (c), but some weeds and stones (n = 0.045)" = 0.045,
     "(e) Same as (c), at lower stages, with less effective slopes and sections (n = 0.048)" = 0.048,
     "(f) Same as (d), but more stones (n = 0.050)" = 0.050,
-    "(g) Sluggish reaches, weedy, deep pools (n = 0.070)" = 0.700,
+    "(g) Sluggish reaches, weedy, deep pools (n = 0.070)" = 0.070,
     "(h) Very weedy reaches, seep pools or floodways with heavy stands of timber and underbrush (n = 0.100)" = 0.100)
   
   tagList(
