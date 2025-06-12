@@ -93,7 +93,7 @@ app_server <- function(input, output, session) {
   
   # Draw XS ###################################################################
   # Define the leaflet draw_xs_map
-  draw_xs_map <- get_leaflet(search = TRUE)
+  draw_xs_map <- get_leaflet(search = TRUE, zoom = 4)
   
   # Define the draw_xs mapedit module
   xs_editor_ui <- callModule(
@@ -243,16 +243,16 @@ app_server <- function(input, output, session) {
                                          watersurface = floodplain_ws)
     print(paste("channel vol: ", base::round(channel_vol, 2), 
                 "floodplain vol: ", base::round(floodplain_vol, 2)))
-    print("calculate L2 xs dimensions ---------------------------------------")
-    xs_dims_l2 <<- xs %>%
-      cross_section_dimensions_L2(
-        xs_points = xs_pts,
-        bankfull_elevation = as.numeric(input$channel_elevation),
-        lead_n = 1,
-        use_smoothing = FALSE,
-        vert_units = "ft") %>%
-      distinct(Seq, .keep_all = TRUE)
-    print(xs_dims_l2)
+    # print("calculate L2 xs dimensions ---------------------------------------")
+    # xs_dims_l2 <<- xs %>%
+    #   cross_section_dimensions_L2(
+    #     xs_points = xs_pts,
+    #     bankfull_elevation = as.numeric(input$channel_elevation),
+    #     lead_n = 1,
+    #     use_smoothing = FALSE,
+    #     vert_units = "ft") %>%
+    #   distinct(Seq, .keep_all = TRUE)
+    # print(xs_dims_l2)
     # Update selectors ########################################################
     print("pick cross section -----------------------------------------------")
     updateSelectInput(
@@ -366,16 +366,16 @@ app_server <- function(input, output, session) {
                                         watersurface = channel_ws)
       print(paste("channel vol: ", base::round(channel_vol, 2), 
                   "floodplain vol: ", base::round(floodplain_vol, 2)))
-      print("calculate L2 xs dimensions -------------------------------------")
-      xs_dims_l2 <<- xs %>%
-        cross_section_dimensions_L2(
-          xs_points = xs_pts,
-          bankfull_elevation = as.numeric(input$channel_elevation),
-          lead_n = 1,
-          use_smoothing = FALSE,
-          vert_units = "ft") %>%
-        distinct(Seq, .keep_all = TRUE)
-      print(xs_dims_l2)
+      # print("calculate L2 xs dimensions -------------------------------------")
+      # xs_dims_l2 <<- xs %>%
+      #   cross_section_dimensions_L2(
+      #     xs_points = xs_pts,
+      #     bankfull_elevation = as.numeric(input$channel_elevation),
+      #     lead_n = 1,
+      #     use_smoothing = FALSE,
+      #     vert_units = "ft") %>%
+      #   distinct(Seq, .keep_all = TRUE)
+      # print(xs_dims_l2)
       print("update results_map ---------------------------------------------")
       leafletProxy(mapId = "results_map", data = channel_poly) %>%
         flyTo(lng  = input$results_map_center$lng, 
