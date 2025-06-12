@@ -37,8 +37,9 @@ xs_discharge_table <- function(xs_pts, xs_number, bf_estimate, mannings_n) {
   xs <- xs_ss %>%
     filter(.data$Seq == xs_number) 
   
-  point_sfc <- sf::st_sfc(sf::st_point(x = c(xs$POINT_X, xs$POINT_Y)), 
-                                       crs = 3857)
+  point_sfc <- sf::st_sfc(sf::st_point(x = c(xs$POINT_X, xs$POINT_Y), 
+                                       dim = "XY"), 
+                          crs = 3857)
   start_comid <- discover_nhdplus_id(
     point = point_sfc, 
     nldi_feature = "comid",
@@ -89,7 +90,7 @@ xs_discharge_table <- function(xs_pts, xs_number, bf_estimate, mannings_n) {
   dims_table_long <- dims_table %>%
     pivot_longer(everything()) %>%
     mutate(units = c("sq ft", "ft", "ft", "sq mi", "ft", "", "cfs", "ft sec")) %>%
-    mutate(label = c("XS Area", "XS Width", "XS Mean Depth", "Drainage Area",
+    mutate(label = c("XS Area (A)", "XS Width", "XS Mean Depth", "Drainage Area",
                      "XS Hydraulic Radius (R)", "Slope (S)", 
                      "Channel Flow (Q)", "Channel Velocity (V)")) %>%
     relocate(label, .before = name) %>%

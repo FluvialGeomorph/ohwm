@@ -26,9 +26,10 @@ test_that("check for discharge table", {
   buffer_distance <- 5
   xs_pts <- xs_pts_classify(xs_pts, channel_poly, floodplain_poly,
                             buffer_distance)
+  
   xs_number   <- 1
   bf_estimate <- channel_wse
-  mannings_n = 0.045
+  mannings_n <- 0.3
   
   t1 <- xs_discharge_table(
     xs_pts = xs_pts,
