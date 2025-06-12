@@ -340,8 +340,8 @@ app_server <- function(input, output, session) {
         bf_estimate = req(input$floodplain_elevation),
         mannings_n = as.numeric(input$floodplain_mannings))
     )
-    
     remove_modal_spinner()
+    
     
     # Channel Slider ##########################################################
     observeEvent(input$channel_elevation, {
@@ -488,7 +488,7 @@ app_server <- function(input, output, session) {
     
     # Manning's n update ######################################################
     observeEvent(input$channel_mannings, {
-      show_modal_spinner(spin = "circle", text = "Re-calculating Geometry")
+      show_modal_spinner(spin = "circle", text = "Re-calculating Discharge")
       print("update discharge -----------------------------------------------")
       output$channel_discharge <- render_gt(
         xs_discharge_table(
@@ -500,7 +500,7 @@ app_server <- function(input, output, session) {
       remove_modal_spinner()
     })
     observeEvent(input$floodplain_mannings, {
-      show_modal_spinner(spin = "circle", text = "Re-calculating Geometry")
+      show_modal_spinner(spin = "circle", text = "Re-calculating Discharge")
       print("update discharge -----------------------------------------------")
       output$floodplain_discharge <- render_gt(
         xs_discharge_table(
