@@ -17,17 +17,17 @@
 #' @importFrom fluvgeo slope_sinuosity xs_dimensions
 #' @importFrom dplyr group_by slice_min filter .data distinct select mutate 
 #'                   rename ungroup left_join join_by relocate recode 
-#'                   across arrange
+#'                   across arrange everything
 #' @importFrom tidyr pivot_longer
 #' @importFrom nhdplusTools discover_nhdplus_id subset_nhdplus
 #' @importFrom gt gt fmt_number cols_label_with cols_label tab_options px
 #'
 xs_discharge_table <- function(xs_pts, xs_number, bf_estimate, mannings_n) {
 
-    # Calculate the slope from adjacent cross sections
+  # Calculate the slope from adjacent cross sections
   xs_ss <- xs_pts %>%
     group_by(Seq) %>%
-    slice_min(DEM_Z, n = 1) %>%
+    slice_min(DEM_Z, n = 1, with_ties = FALSE) %>%
     rename(Z = DEM_Z) %>%
     slope_sinuosity(lead_n = 1, lag_n = 1, use_smoothing = FALSE, 
                     vert_units = "ft") %>%
@@ -35,15 +35,21 @@ xs_discharge_table <- function(xs_pts, xs_number, bf_estimate, mannings_n) {
   
   # Get reach slope from nhdPlus flowline
   xs <- xs_ss %>%
-    filter(.data$Seq == xs_number) 
+    filter(.data$Seq == xs_number)
+  
+  print(paste0("Seq: ", xs$Seq))
+  print(paste0("X: ", round(xs$POINT_X), 
+               " Y: ", round(xs$POINT_Y)))
   
   point_sfc <- sf::st_sfc(sf::st_point(x = c(xs$POINT_X, xs$POINT_Y), 
                                        dim = "XY"), 
                           crs = 3857)
+  
   start_comid <- discover_nhdplus_id(
     point = point_sfc, 
     nldi_feature = "comid",
     raindrop = TRUE)
+  print(paste0("comid: ", start_comid$comid[1]))
   
   output_file <- tempfile(fileext = ".gpkg")
   nhd_flowline <- subset_nhdplus(
@@ -52,6 +58,7 @@ xs_discharge_table <- function(xs_pts, xs_number, bf_estimate, mannings_n) {
     nhdplus_data = "download",
     overwrite = TRUE, status = FALSE, flowline_only = TRUE)
   unlink(output_file)
+  print(paste0("GNIS Name: ", nhd_flowline$NHDFlowline_Network$gnis_name))
   
   nhd_slope <- nhd_flowline[1]$NHDFlowline_Network$slope
   
