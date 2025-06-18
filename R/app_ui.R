@@ -5,6 +5,8 @@
 #' @import shiny
 #' @importFrom bslib page_navbar nav_panel layout_sidebar sidebar bs_theme
 #'                   accordion accordion_panel layout_columns card card_header
+#'                   card_body tooltip
+#' @importFrom bsicons bs_icon
 #' @importFrom mapedit editModUI
 #' @importFrom leaflet leafletOutput
 #' @importFrom shinyWidgets autonumericInput noUiSliderInput wNumbFormat
@@ -13,6 +15,11 @@
 #' 
 #' @noRd
 app_ui <- function(request) {
+  
+  # Help text and variable values
+  channel_rem_info <- "Set the channel's water surfce level in Relative Elevation Model (REM) units."
+  floodplain_rem_info <- "Set the floodplain's water surface level in Relative Elevation Model (REM) units."
+  discharge_info <- "This form of the *Gauckler-Manning formula* is used to calculate discharge in the tables below. "
   mannings_choices <- c(
     "(a) Clean, straight, no deep pools (n = 0.030)" = 0.030,
     "(b) Same as (a), but more stones and weeds (n = 0.035)" = 0.035,
@@ -25,9 +32,8 @@ app_ui <- function(request) {
   
   tagList(
     golem_add_external_resources(),
-    
     page_navbar(
-      title = "FluvialGeomorph Tiered Assessment",
+      title = "FluvialGeomorph Floodplain Connectivity",
       id = "main",
       theme = bs_theme(bootswatch = "cerulean", version = 5),
       
@@ -72,40 +78,69 @@ app_ui <- function(request) {
               title = "Cross Sections",
               selectInput("pick_xs", label = "Select a cross section:", 
                           choices = c(1)),
-              splitLayout(
-                noUiSliderInput("channel_elevation", "Channel REM:",
-                                min = 100, max = 130, value = 103, 
-                                format = wNumbFormat(decimals = 1),
-                                orientation = "horizontal", 
-                                update_on = "end"),
-                noUiSliderInput("floodplain_elevation", "Floodplain REM:",
-                                min = 100, max = 130, value = 112, 
-                                format = wNumbFormat(decimals = 1),
-                                orientation = "horizontal", 
-                                update_on = "end")),
+              layout_columns(
+                card(
+                  card_header("Set Channel REM",
+                    tooltip(trigger = bs_icon("info-circle"),
+                      placement = "right",
+                      channel_rem_info)
+                  ),
+                  noUiSliderInput(inputId = "channel_elevation",
+                    min = 100, max = 130, value = 103, 
+                    format = wNumbFormat(decimals = 1),
+                    orientation = "horizontal", 
+                    update_on = "end")
+                ),
+                card(
+                  card_header("Set Floodplain REM",
+                    tooltip(trigger = bs_icon("info-circle"),
+                      placement = "right",
+                      floodplain_rem_info)
+                  ),
+                  noUiSliderInput(inputId = "floodplain_elevation",
+                    min = 100, max = 130, value = 112, 
+                    format = wNumbFormat(decimals = 1),
+                    orientation = "horizontal", 
+                    update_on = "end")
+                )
+              ),
               plotOutput("xs_plot_channel", height = "250px"),
               plotOutput("xs_plot_floodplain", height = "250px"),
-              gt_output("floodplain_volumes")
+              card(
+                card_header("Storage Volume", class = "p-2"),
+                card_body(class = "p-0",
+                  gt_output("floodplain_volumes")
+                )
+              )
             ),
             accordion_panel(
               title = "Discharge",
-              withMathJax("$$Q = \\frac{1.486}{n} A R ^\\frac{2}{3} S^\\frac{1}{2}$$"),
+              layout_columns(
+                withMathJax("$$Q = \\frac{1.486}{n} A R ^\\frac{2}{3} S^\\frac{1}{2}$$"),
+                tooltip(bs_icon("info-circle"),
+                  discharge_info,
+                  placement = "right")
+              ),
               layout_columns(
                 card(
-                  card_header("Channel"),
-                  selectInput(
-                    inputId = "channel_mannings", 
-                    label = "Set Manning's n:",
-                    choices = mannings_choices),
-                  gt_output("channel_discharge")
+                  card_header("Channel", class = "p-2"),
+                  card_body(class = "p-2",
+                    selectInput(
+                      inputId = "channel_mannings", 
+                      label = "Set Manning's n:",
+                      choices = mannings_choices),
+                    gt_output("channel_discharge")
+                  )
                 ), 
                 card(
-                  card_header("Floodplain"),
-                  selectInput(
-                    inputId = "floodplain_mannings", 
-                    label = "Set Manning's n:",
-                    choices = mannings_choices),
-                  gt_output("floodplain_discharge")
+                  card_header("Floodplain", class = "p-2"),
+                  card_body(class = "p-2",
+                    selectInput(
+                      inputId = "floodplain_mannings", 
+                      label = "Set Manning's n:",
+                      choices = mannings_choices),
+                    gt_output("floodplain_discharge")
+                  )
                 )
               )
             )
