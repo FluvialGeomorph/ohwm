@@ -1129,6 +1129,40 @@
       "Maintainer": "Gábor Csárdi <csardi.gabor@gmail.com>",
       "Repository": "CRAN"
     },
+    "bsicons": {
+      "Package": "bsicons",
+      "Version": "0.1.2",
+      "Source": "Repository",
+      "Title": "Easily Work with 'Bootstrap' Icons",
+      "Authors@R": "c( person(\"Carson\", \"Sievert\", , \"carson@posit.co\", role = c(\"cre\", \"aut\"), comment = c(ORCID = \"0000-0002-4958-2844\")), person(\"Posit Software, PBC\", role = c(\"cph\", \"fnd\")), person(\"Mark\", \"Otto\", role = \"cph\", comment = \"Bootstrap icons maintainer\") )",
+      "Description": "Easily use 'Bootstrap' icons inside 'Shiny' apps and 'R Markdown' documents. More generally, icons can be inserted in any 'htmltools' document through inline 'SVG'.",
+      "License": "MIT + file LICENSE",
+      "URL": "https://github.com/rstudio/bsicons",
+      "BugReports": "https://github.com/rstudio/bsicons/issues",
+      "Depends": [
+        "R (>= 2.10)"
+      ],
+      "Imports": [
+        "cli",
+        "htmltools",
+        "rlang",
+        "utils"
+      ],
+      "Suggests": [
+        "bslib",
+        "processx",
+        "testthat",
+        "webshot2",
+        "withr"
+      ],
+      "Config/testthat/edition": "3",
+      "Encoding": "UTF-8",
+      "RoxygenNote": "7.2.3",
+      "NeedsCompilation": "no",
+      "Author": "Carson Sievert [cre, aut] (<https://orcid.org/0000-0002-4958-2844>), Posit Software, PBC [cph, fnd], Mark Otto [cph] (Bootstrap icons maintainer)",
+      "Maintainer": "Carson Sievert <carson@posit.co>",
+      "Repository": "CRAN"
+    },
     "bslib": {
       "Package": "bslib",
       "Version": "0.9.0",
@@ -2244,7 +2278,7 @@
     },
     "evaluate": {
       "Package": "evaluate",
-      "Version": "1.0.3",
+      "Version": "1.0.4",
       "Source": "Repository",
       "Type": "Package",
       "Title": "Parsing and Evaluation Tools that Provide More Details than the Default",
@@ -2263,7 +2297,8 @@
         "lattice",
         "methods",
         "pkgload",
-        "rlang",
+        "ragg (>= 1.4.0)",
+        "rlang (>= 1.1.5)",
         "knitr",
         "testthat (>= 3.0.0)",
         "withr"
@@ -2273,7 +2308,7 @@
       "Encoding": "UTF-8",
       "RoxygenNote": "7.3.2",
       "NeedsCompilation": "no",
-      "Author": "Hadley Wickham [aut, cre], Yihui Xie [aut] (<https://orcid.org/0000-0003-0645-5666>), Michael Lawrence [ctb], Thomas Kluyver [ctb], Jeroen Ooms [ctb], Barret Schloerke [ctb], Adam Ryczkowski [ctb], Hiroaki Yutani [ctb], Michel Lang [ctb], Karolis Koncevičius [ctb], Posit Software, PBC [cph, fnd]",
+      "Author": "Hadley Wickham [aut, cre], Yihui Xie [aut] (ORCID: <https://orcid.org/0000-0003-0645-5666>), Michael Lawrence [ctb], Thomas Kluyver [ctb], Jeroen Ooms [ctb], Barret Schloerke [ctb], Adam Ryczkowski [ctb], Hiroaki Yutani [ctb], Michel Lang [ctb], Karolis Koncevičius [ctb], Posit Software, PBC [cph, fnd]",
       "Maintainer": "Hadley Wickham <hadley@posit.co>",
       "Repository": "CRAN"
     },
@@ -2419,8 +2454,8 @@
       "RemoteHost": "api.github.com",
       "RemoteRepo": "fluvgeo",
       "RemoteUsername": "FluvialGeomorph",
-      "RemoteRef": "v2025.06.12.1",
-      "RemoteSha": "d2f4375512fdc1a7d362f57ca7f3e5a7c9271f40",
+      "RemoteRef": "v2025.06.18",
+      "RemoteSha": "eaae11d439dc0463a3e5d446f4e089b5506755ec",
       "NeedsCompilation": "no",
       "Author": "Michael Dougherty [aut] (<https://orcid.org/0000-0002-1465-5927>), Christopher Haring [aut], Barrie Chileen Martinez [aut, cre] (<https://orcid.org/0000-0002-6960-8167>), Thomas Darby [rev], Davi Michl [rev]",
       "Maintainer": "Barrie Chileen Martinez <Barrie.V.Chileen@usace.army.mil>"

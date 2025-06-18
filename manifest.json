@@ -1029,6 +1029,33 @@
         "Archs": "x64"
       }
     },
+    "bsicons": {
+      "Source": "CRAN",
+      "Repository": "https://cran.rstudio.com",
+      "description": {
+        "Package": "bsicons",
+        "Title": "Easily Work with 'Bootstrap' Icons",
+        "Version": "0.1.2",
+        "Authors@R": "c(\n    person(\"Carson\", \"Sievert\", , \"carson@posit.co\", role = c(\"cre\", \"aut\"),\n           comment = c(ORCID = \"0000-0002-4958-2844\")),\n    person(\"Posit Software, PBC\", role = c(\"cph\", \"fnd\")),\n    person(\"Mark\", \"Otto\", role = \"cph\",\n           comment = \"Bootstrap icons maintainer\")\n  )",
+        "Description": "Easily use 'Bootstrap' icons inside 'Shiny' apps and 'R\n    Markdown' documents. More generally, icons can be inserted in any\n    'htmltools' document through inline 'SVG'.",
+        "License": "MIT + file LICENSE",
+        "URL": "https://github.com/rstudio/bsicons",
+        "BugReports": "https://github.com/rstudio/bsicons/issues",
+        "Depends": "R (>= 2.10)",
+        "Imports": "cli, htmltools, rlang, utils",
+        "Suggests": "bslib, processx, testthat, webshot2, withr",
+        "Config/testthat/edition": "3",
+        "Encoding": "UTF-8",
+        "RoxygenNote": "7.2.3",
+        "NeedsCompilation": "no",
+        "Packaged": "2023-11-03 23:29:00 UTC; cpsievert",
+        "Author": "Carson Sievert [cre, aut] (<https://orcid.org/0000-0002-4958-2844>),\n  Posit Software, PBC [cph, fnd],\n  Mark Otto [cph] (Bootstrap icons maintainer)",
+        "Maintainer": "Carson Sievert <carson@posit.co>",
+        "Repository": "CRAN",
+        "Date/Publication": "2023-11-04 00:30:05 UTC",
+        "Built": "R 4.4.3; ; 2025-06-11 01:24:05 UTC; windows"
+      }
+    },
     "bslib": {
       "Source": "CRAN",
       "Repository": "https://cran.rstudio.com",
@@ -1860,25 +1887,25 @@
         "Type": "Package",
         "Package": "evaluate",
         "Title": "Parsing and Evaluation Tools that Provide More Details than the\nDefault",
-        "Version": "1.0.3",
+        "Version": "1.0.4",
         "Authors@R": "c(\n    person(\"Hadley\", \"Wickham\", , \"hadley@posit.co\", role = c(\"aut\", \"cre\")),\n    person(\"Yihui\", \"Xie\", role = \"aut\",\n           comment = c(ORCID = \"0000-0003-0645-5666\")),\n    person(\"Michael\", \"Lawrence\", role = \"ctb\"),\n    person(\"Thomas\", \"Kluyver\", role = \"ctb\"),\n    person(\"Jeroen\", \"Ooms\", role = \"ctb\"),\n    person(\"Barret\", \"Schloerke\", role = \"ctb\"),\n    person(\"Adam\", \"Ryczkowski\", role = \"ctb\"),\n    person(\"Hiroaki\", \"Yutani\", role = \"ctb\"),\n    person(\"Michel\", \"Lang\", role = \"ctb\"),\n    person(\"Karolis\", \"Koncevičius\", role = \"ctb\"),\n    person(\"Posit Software, PBC\", role = c(\"cph\", \"fnd\"))\n  )",
         "Description": "Parsing and evaluation tools that make it easy to recreate\n    the command line behaviour of R.",
         "License": "MIT + file LICENSE",
         "URL": "https://evaluate.r-lib.org/, https://github.com/r-lib/evaluate",
         "BugReports": "https://github.com/r-lib/evaluate/issues",
         "Depends": "R (>= 3.6.0)",
-        "Suggests": "callr, covr, ggplot2 (>= 3.3.6), lattice, methods, pkgload,\nrlang, knitr, testthat (>= 3.0.0), withr",
+        "Suggests": "callr, covr, ggplot2 (>= 3.3.6), lattice, methods, pkgload,\nragg (>= 1.4.0), rlang (>= 1.1.5), knitr, testthat (>= 3.0.0),\nwithr",
         "Config/Needs/website": "tidyverse/tidytemplate",
         "Config/testthat/edition": "3",
         "Encoding": "UTF-8",
         "RoxygenNote": "7.3.2",
         "NeedsCompilation": "no",
-        "Packaged": "2025-01-10 22:27:28 UTC; hadleywickham",
-        "Author": "Hadley Wickham [aut, cre],\n  Yihui Xie [aut] (<https://orcid.org/0000-0003-0645-5666>),\n  Michael Lawrence [ctb],\n  Thomas Kluyver [ctb],\n  Jeroen Ooms [ctb],\n  Barret Schloerke [ctb],\n  Adam Ryczkowski [ctb],\n  Hiroaki Yutani [ctb],\n  Michel Lang [ctb],\n  Karolis Koncevičius [ctb],\n  Posit Software, PBC [cph, fnd]",
+        "Packaged": "2025-06-17 18:21:29 UTC; hadleywickham",
+        "Author": "Hadley Wickham [aut, cre],\n  Yihui Xie [aut] (ORCID: <https://orcid.org/0000-0003-0645-5666>),\n  Michael Lawrence [ctb],\n  Thomas Kluyver [ctb],\n  Jeroen Ooms [ctb],\n  Barret Schloerke [ctb],\n  Adam Ryczkowski [ctb],\n  Hiroaki Yutani [ctb],\n  Michel Lang [ctb],\n  Karolis Koncevičius [ctb],\n  Posit Software, PBC [cph, fnd]",
         "Maintainer": "Hadley Wickham <hadley@posit.co>",
         "Repository": "CRAN",
-        "Date/Publication": "2025-01-10 23:00:02 UTC",
-        "Built": "R 4.4.2; ; 2025-01-11 00:50:58 UTC; windows"
+        "Date/Publication": "2025-06-18 04:40:16 UTC",
+        "Built": "R 4.4.3; ; 2025-06-18 21:35:47 UTC; windows"
       }
     },
     "fansi": {
@@ -1985,17 +2012,17 @@
         "RemoteHost": "api.github.com",
         "RemoteRepo": "fluvgeo",
         "RemoteUsername": "FluvialGeomorph",
-        "RemoteRef": "v2025.06.12.1",
-        "RemoteSha": "d2f4375512fdc1a7d362f57ca7f3e5a7c9271f40",
+        "RemoteRef": "v2025.06.18",
+        "RemoteSha": "eaae11d439dc0463a3e5d446f4e089b5506755ec",
         "GithubRepo": "fluvgeo",
         "GithubUsername": "FluvialGeomorph",
-        "GithubRef": "v2025.06.12.1",
-        "GithubSHA1": "d2f4375512fdc1a7d362f57ca7f3e5a7c9271f40",
+        "GithubRef": "v2025.06.18",
+        "GithubSHA1": "eaae11d439dc0463a3e5d446f4e089b5506755ec",
         "NeedsCompilation": "no",
-        "Packaged": "2025-06-12 18:05:06 UTC; B5PMMMPD",
+        "Packaged": "2025-06-18 21:36:20 UTC; B5PMMMPD",
         "Author": "Michael Dougherty [aut] (<https://orcid.org/0000-0002-1465-5927>),\n  Christopher Haring [aut],\n  Barrie Chileen Martinez [aut, cre]\n    (<https://orcid.org/0000-0002-6960-8167>),\n  Thomas Darby [rev],\n  Davi Michl [rev]",
         "Maintainer": "Barrie Chileen Martinez <Barrie.V.Chileen@usace.army.mil>",
-        "Built": "R 4.4.3; ; 2025-06-12 18:05:25 UTC; windows"
+        "Built": "R 4.4.3; ; 2025-06-18 21:36:37 UTC; windows"
       }
     },
     "fontawesome": {
@@ -4019,32 +4046,18 @@
         "Title": "Identify Ordinary High Water Marks",
         "Description": "An R Shiny app for remotely identifying stream Ordinary High Water Marks (OHWM) using publicly available terrain data for small sites.",
         "Version": "2025.05.17",
-        "Authors@R": "c(\n    person(\"Michael\", \"Dougherty\", \n           email = \"Michael.P.Dougherty@usace.army.mil\", \n           role = c(\"aut\", \"cre\"),\n           comment = c(ORCID = \"0000-0002-1465-5927\")),\n    person(\"Christopher\", \"Haring\",\n           email = \"Christopher.P.Haring@usace.army.mil\",\n           role = c(\"aut\")),\n    person(\"Thomas\", \"Darby\",\n           email = \"Thomas.A.Darby@usace.army.mil\",\n           role = c(\"rev\"))\n    )",
+        "Authors@R": "c(\nperson(\"Michael\", \"Dougherty\",\nemail = \"Michael.P.Dougherty@usace.army.mil\",\nrole = c(\"aut\", \"cre\"),\ncomment = c(ORCID = \"0000-0002-1465-5927\")),\nperson(\"Christopher\", \"Haring\",\nemail = \"Christopher.P.Haring@usace.army.mil\",\nrole = c(\"aut\")),\nperson(\"Thomas\", \"Darby\",\nemail = \"Thomas.A.Darby@usace.army.mil\",\nrole = c(\"rev\"))\n)",
         "License": "file LICENSE",
         "URL": "https://github.com/FluvialGeomorph/ohwm",
         "BugReports": "https://github.com/FluvialGeomorph/ohwm/issues",
-        "Imports": "assertthat, attempt, bslib, config, dplyr, DT, fluvgeo (>=\n2025.5.3), glue, golem, gt, htmltools, leaflet, leaflet.extras,\nleafpm, mapedit, pkgload, purrr, sf, shiny, shinybusy,\nshinyWidgets, terra, tibble, tidyterra",
-        "Suggests": "spelling, testthat (>= 3.0.0)",
+        "Imports": "assertthat,\nattempt,\nbslib,\nconfig,\ndplyr,\nDT,\nfluvgeo (>= 2025.5.3),\nglue,\ngolem,\ngt,\nhtmltools,\nleaflet,\nleaflet.extras,\nleafpm,\nmapedit,\npkgload,\npurrr,\nsf,\nshiny,\nshinybusy,\nshinyWidgets,\nterra,\ntibble,\ntidyterra",
+        "Suggests": "spelling,\ntestthat (>= 3.0.0)",
         "Encoding": "UTF-8",
+        "LazyData": "true",
         "RoxygenNote": "7.3.2",
         "Config/testthat/edition": "3",
         "Language": "en-US",
-        "Remotes": "FluvialGeomorph/fluvgeo@*release",
-        "RemoteType": "github",
-        "RemoteHost": "api.github.com",
-        "RemoteRepo": "ohwm",
-        "RemoteUsername": "FluvialGeomorph",
-        "RemoteRef": "v2025.05.07",
-        "RemoteSha": "576375520706f82c6edb55a4215a6d9e7bf6afc9",
-        "GithubRepo": "ohwm",
-        "GithubUsername": "FluvialGeomorph",
-        "GithubRef": "v2025.05.07",
-        "GithubSHA1": "576375520706f82c6edb55a4215a6d9e7bf6afc9",
-        "NeedsCompilation": "no",
-        "Packaged": "2025-05-17 22:00:08 UTC; B5PMMMPD",
-        "Author": "Michael Dougherty [aut, cre] (<https://orcid.org/0000-0002-1465-5927>),\n  Christopher Haring [aut],\n  Thomas Darby [rev]",
-        "Maintainer": "Michael Dougherty <Michael.P.Dougherty@usace.army.mil>",
-        "Built": "R 4.4.3; ; 2025-05-17 22:00:12 UTC; windows"
+        "Remotes": "FluvialGeomorph/fluvgeo@*release"
       }
     },
     "openssl": {
@@ -6923,7 +6936,7 @@
       "checksum": "619e09c3514536387d445d05fc823889"
     },
     "NAMESPACE": {
-      "checksum": "528072c3e435ce439ca8f024b495445c"
+      "checksum": "699b0eacb7860804a67a88dbcd00e187"
     },
     "R/_disable_autoload.R": {
       "checksum": "9d8f7f20e88b559c046ec1f59fe82cba"
@@ -6932,10 +6945,10 @@
       "checksum": "4626d2c3d9304a540c2dca4673884751"
     },
     "R/app_server.R": {
-      "checksum": "fa69e23ac5293a69801c9106f1c187af"
+      "checksum": "1c7fd32fda27784fd3e6edc0d986babd"
     },
     "R/app_ui.R": {
-      "checksum": "751d5f90c82b23b2340d093e21b336de"
+      "checksum": "7fb67e96af8106df9a208c8d0bb00e01"
     },
     "R/empty_raster.R": {
       "checksum": "9a83a56c6115d17d89e3f69dde6e2a52"
@@ -6959,10 +6972,10 @@
       "checksum": "acb0bc8e75d3e98c26202ea80e8bf94b"
     },
     "R/xs_discharge_table.R": {
-      "checksum": "539708dc184547eef756308c8f0fded0"
+      "checksum": "daff492afd30594a188572dc80142cfe"
     },
     "renv.lock": {
-      "checksum": "2a5f3d1691bcf75ac109dd123d110f33"
+      "checksum": "0276034e70d1be499a77ccee40ff9139"
     }
   },
   "users": null
