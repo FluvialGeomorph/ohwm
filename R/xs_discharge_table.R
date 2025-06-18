@@ -113,7 +113,9 @@ xs_discharge_table <- function(xs_pts, xs_number, bf_estimate, mannings_n) {
       column_labels.font.weight = "bold",
       table.font.size = "small",
       column_labels.padding = px(2),
-      data_row.padding = px(1))
+      data_row.padding = px(1),
+      table.margin.left = px(1),
+      table.margin.right = px(1))
   #gt_table
   return(gt_table)
 }
