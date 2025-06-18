@@ -1995,7 +1995,7 @@
       "description": {
         "Package": "fluvgeo",
         "Title": "A Package for Fluvial Geomorphic Analysis",
-        "Version": "2025.06.12",
+        "Version": "2025.06.18",
         "Authors@R": "c(\n    person(\"Michael\", \"Dougherty\", , \"Michael.P.Dougherty@usace.army.mil\", \n           role = \"aut\",\n           comment = c(ORCID = \"0000-0002-1465-5927\")),\n    person(\"Christopher\", \"Haring\", , \"Christopher.P.Haring@usace.army.mil\", \n           role = \"aut\"),\n    person(\"Barrie\", \"Chileen Martinez\", , \"Barrie.V.Chileen@usace.army.mil\", \n           role = c(\"aut\", \"cre\"),\n           comment = c(ORCID = \"0000-0002-6960-8167\")),\n    person(\"Thomas\", \"Darby\", role = \"rev\"),\n    person(\"Davi\", \"Michl\", role = \"rev\")\n  )",
         "Description": "This package contains a wide range of functions for\n    performing fluvial geomorphic analysis. This package is designed for\n    use with the FluvialGeomorph Python package. The FluvialGeomorph\n    package contains an ArcGIS toolbox that can be used to extract spatial\n    data from high- resolution terrain data. FluvialGeomorph uses\n    functions in this package to perform a wide range of fluvial\n    geomorphic analysis (e.g., extract stream channel dimensions, help\n    choose bankfull elevation for ungaged streams).",
         "License": "file LICENSE",
@@ -2012,17 +2012,17 @@
         "RemoteHost": "api.github.com",
         "RemoteRepo": "fluvgeo",
         "RemoteUsername": "FluvialGeomorph",
-        "RemoteRef": "v2025.06.18",
-        "RemoteSha": "eaae11d439dc0463a3e5d446f4e089b5506755ec",
+        "RemoteRef": "v2025.06.18.1",
+        "RemoteSha": "967cf546a765d6642909c0fb43ef9d0d88024461",
         "GithubRepo": "fluvgeo",
         "GithubUsername": "FluvialGeomorph",
-        "GithubRef": "v2025.06.18",
-        "GithubSHA1": "eaae11d439dc0463a3e5d446f4e089b5506755ec",
+        "GithubRef": "v2025.06.18.1",
+        "GithubSHA1": "967cf546a765d6642909c0fb43ef9d0d88024461",
         "NeedsCompilation": "no",
-        "Packaged": "2025-06-18 21:36:20 UTC; B5PMMMPD",
+        "Packaged": "2025-06-18 21:56:47 UTC; B5PMMMPD",
         "Author": "Michael Dougherty [aut] (<https://orcid.org/0000-0002-1465-5927>),\n  Christopher Haring [aut],\n  Barrie Chileen Martinez [aut, cre]\n    (<https://orcid.org/0000-0002-6960-8167>),\n  Thomas Darby [rev],\n  Davi Michl [rev]",
         "Maintainer": "Barrie Chileen Martinez <Barrie.V.Chileen@usace.army.mil>",
-        "Built": "R 4.4.3; ; 2025-06-18 21:36:37 UTC; windows"
+        "Built": "R 4.4.3; ; 2025-06-18 21:57:04 UTC; windows"
       }
     },
     "fontawesome": {
@@ -6975,7 +6975,7 @@
       "checksum": "daff492afd30594a188572dc80142cfe"
     },
     "renv.lock": {
-      "checksum": "0276034e70d1be499a77ccee40ff9139"
+      "checksum": "d348e27f6e2d5ed6b1a4995a640c239a"
     }
   },
   "users": null
