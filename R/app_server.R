@@ -11,7 +11,7 @@
 #'                     removeShape addPolygons flyTo
 #' @importFrom dplyr %>% bind_rows mutate select filter distinct
 #' @importFrom mapedit editMod
-#' @importFrom leafpm addPmToolbar pmToolbarOptions
+#' @importFrom leafpm addPmToolbar pmToolbarOptions pmDrawOptions
 #' @importFrom leaflet.extras addSearchOSM searchOptions
 #' @importFrom sf st_as_sf st_sfc st_transform
 #' @importFrom terra plot crs ifel as.polygons disagg relate vect
@@ -111,6 +111,10 @@ app_server <- function(input, output, session) {
         drawRectangle = FALSE,
         cutPolygon = FALSE,
         position = "topright"
+      ),
+      drawOptions = pmDrawOptions(
+        snappable = FALSE,
+        tooltips = FALSE
       )
     )
   )
@@ -160,6 +164,10 @@ app_server <- function(input, output, session) {
           drawRectangle = FALSE,
           cutPolygon = FALSE,
           position = "topright"
+        ),
+        drawOptions = pmDrawOptions(
+          snappable = FALSE,
+          tooltips = FALSE
         )
       )
     )
