@@ -1,7 +1,7 @@
 Package: ohwm
 Title: Identify Ordinary High Water Marks
 Description: An R Shiny app for remotely identifying stream Ordinary High Water Marks (OHWM) using publicly available terrain data for small sites.
-Version: 2025.05.17
+Version: 2025.06.23
 Authors@R: c(
     person("Michael", "Dougherty", 
            email = "Michael.P.Dougherty@usace.army.mil", 

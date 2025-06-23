@@ -2388,7 +2388,7 @@
     },
     "fluvgeo": {
       "Package": "fluvgeo",
-      "Version": "2025.06.18.2",
+      "Version": "2025.06.18.3",
       "Source": "GitHub",
       "Title": "A Package for Fluvial Geomorphic Analysis",
       "Authors@R": "c( person(\"Michael\", \"Dougherty\", , \"Michael.P.Dougherty@usace.army.mil\",  role = \"aut\", comment = c(ORCID = \"0000-0002-1465-5927\")), person(\"Christopher\", \"Haring\", , \"Christopher.P.Haring@usace.army.mil\",  role = \"aut\"), person(\"Barrie\", \"Chileen Martinez\", , \"Barrie.V.Chileen@usace.army.mil\",  role = c(\"aut\", \"cre\"), comment = c(ORCID = \"0000-0002-6960-8167\")), person(\"Thomas\", \"Darby\", role = \"rev\"), person(\"Davi\", \"Michl\", role = \"rev\") )",
@@ -2411,6 +2411,7 @@
         "grid",
         "gridExtra",
         "gtable",
+        "httr2",
         "leafem",
         "leaflegend",
         "leaflet",
@@ -2431,6 +2432,7 @@
         "scales",
         "sf",
         "smoothr",
+        "stars",
         "stats",
         "terra",
         "terrainr",
@@ -2443,7 +2445,6 @@
       ],
       "Suggests": [
         "fluvgeodata",
-        "httr2",
         "knitr"
       ],
       "Remotes": "FluvialGeomorph/RegionalCurve, FluvialGeomorph/fluvgeodata",
@@ -2454,8 +2455,8 @@
       "RemoteHost": "api.github.com",
       "RemoteRepo": "fluvgeo",
       "RemoteUsername": "FluvialGeomorph",
-      "RemoteRef": "v2025.06.18.2",
-      "RemoteSha": "a6e5a8c490eb92d23012090c19b8888cbef45b10",
+      "RemoteRef": "v2025.06.18.3",
+      "RemoteSha": "8d4e6633026ec4377a7f84137dcef8d557122e11",
       "NeedsCompilation": "no",
       "Author": "Michael Dougherty [aut] (<https://orcid.org/0000-0002-1465-5927>), Christopher Haring [aut], Barrie Chileen Martinez [aut, cre] (<https://orcid.org/0000-0002-6960-8167>), Thomas Darby [rev], Davi Michl [rev]",
       "Maintainer": "Barrie Chileen Martinez <Barrie.V.Chileen@usace.army.mil>"
@@ -5266,7 +5267,7 @@
     },
     "patchwork": {
       "Package": "patchwork",
-      "Version": "1.3.0",
+      "Version": "1.3.1",
       "Source": "Repository",
       "Type": "Package",
       "Title": "The Composer of Plots",
@@ -5277,7 +5278,7 @@
       "Encoding": "UTF-8",
       "Imports": [
         "ggplot2 (>= 3.0.0)",
-        "gtable",
+        "gtable (>= 0.3.6)",
         "grid",
         "stats",
         "grDevices",
@@ -5305,7 +5306,7 @@
       "VignetteBuilder": "knitr",
       "Config/Needs/website": "gifski",
       "NeedsCompilation": "no",
-      "Author": "Thomas Lin Pedersen [cre, aut] (<https://orcid.org/0000-0002-5147-4711>)",
+      "Author": "Thomas Lin Pedersen [cre, aut] (ORCID: <https://orcid.org/0000-0002-5147-4711>)",
       "Repository": "CRAN"
     },
     "pbapply": {

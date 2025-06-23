@@ -1995,15 +1995,15 @@
       "description": {
         "Package": "fluvgeo",
         "Title": "A Package for Fluvial Geomorphic Analysis",
-        "Version": "2025.06.18.2",
+        "Version": "2025.06.18.3",
         "Authors@R": "c(\n    person(\"Michael\", \"Dougherty\", , \"Michael.P.Dougherty@usace.army.mil\", \n           role = \"aut\",\n           comment = c(ORCID = \"0000-0002-1465-5927\")),\n    person(\"Christopher\", \"Haring\", , \"Christopher.P.Haring@usace.army.mil\", \n           role = \"aut\"),\n    person(\"Barrie\", \"Chileen Martinez\", , \"Barrie.V.Chileen@usace.army.mil\", \n           role = c(\"aut\", \"cre\"),\n           comment = c(ORCID = \"0000-0002-6960-8167\")),\n    person(\"Thomas\", \"Darby\", role = \"rev\"),\n    person(\"Davi\", \"Michl\", role = \"rev\")\n  )",
         "Description": "This package contains a wide range of functions for\n    performing fluvial geomorphic analysis. This package is designed for\n    use with the FluvialGeomorph Python package. The FluvialGeomorph\n    package contains an ArcGIS toolbox that can be used to extract spatial\n    data from high- resolution terrain data. FluvialGeomorph uses\n    functions in this package to perform a wide range of fluvial\n    geomorphic analysis (e.g., extract stream channel dimensions, help\n    choose bankfull elevation for ungaged streams).",
         "License": "file LICENSE",
         "URL": "https://github.com/FluvialGeomorph/fluvgeo,\nhttps://fluvialgeomorph.github.io/fluvgeo/",
         "BugReports": "https://github.com/FluvialGeomorph/fluvgeo/issues",
         "Depends": "R (>= 2.10)",
-        "Imports": "arcgislayers, arcgisutils, assertthat, conicfit, dplyr,\nggplot2, ggrepel, grDevices, grid, gridExtra, gtable, leafem,\nleaflegend, leaflet, leaflet.extras, magrittr, mapboxapi,\nMetrics, nhdplusTools, patchwork, purrr, raster, readr,\nRegionalCurve (>= 0.1.6), reshape2, rlang, rLFT, rmarkdown,\nscales, sf, smoothr, stats, terra, terrainr, testthat, tibble,\ntidyr, tmap, tools, utils",
-        "Suggests": "fluvgeodata, httr2, knitr",
+        "Imports": "arcgislayers, arcgisutils, assertthat, conicfit, dplyr,\nggplot2, ggrepel, grDevices, grid, gridExtra, gtable, httr2,\nleafem, leaflegend, leaflet, leaflet.extras, magrittr,\nmapboxapi, Metrics, nhdplusTools, patchwork, purrr, raster,\nreadr, RegionalCurve (>= 0.1.6), reshape2, rlang, rLFT,\nrmarkdown, scales, sf, smoothr, stars, stats, terra, terrainr,\ntestthat, tibble, tidyr, tmap, tools, utils",
+        "Suggests": "fluvgeodata, knitr",
         "Remotes": "FluvialGeomorph/RegionalCurve, FluvialGeomorph/fluvgeodata",
         "Encoding": "UTF-8",
         "LazyData": "true",
@@ -2012,17 +2012,17 @@
         "RemoteHost": "api.github.com",
         "RemoteRepo": "fluvgeo",
         "RemoteUsername": "FluvialGeomorph",
-        "RemoteRef": "v2025.06.18.2",
-        "RemoteSha": "a6e5a8c490eb92d23012090c19b8888cbef45b10",
+        "RemoteRef": "v2025.06.18.3",
+        "RemoteSha": "8d4e6633026ec4377a7f84137dcef8d557122e11",
         "GithubRepo": "fluvgeo",
         "GithubUsername": "FluvialGeomorph",
-        "GithubRef": "v2025.06.18.2",
-        "GithubSHA1": "a6e5a8c490eb92d23012090c19b8888cbef45b10",
+        "GithubRef": "v2025.06.18.3",
+        "GithubSHA1": "8d4e6633026ec4377a7f84137dcef8d557122e11",
         "NeedsCompilation": "no",
-        "Packaged": "2025-06-18 22:23:00 UTC; B5PMMMPD",
+        "Packaged": "2025-06-23 17:28:43 UTC; B5PMMMPD",
         "Author": "Michael Dougherty [aut] (<https://orcid.org/0000-0002-1465-5927>),\n  Christopher Haring [aut],\n  Barrie Chileen Martinez [aut, cre]\n    (<https://orcid.org/0000-0002-6960-8167>),\n  Thomas Darby [rev],\n  Davi Michl [rev]",
         "Maintainer": "Barrie Chileen Martinez <Barrie.V.Chileen@usace.army.mil>",
-        "Built": "R 4.4.3; ; 2025-06-18 22:23:17 UTC; windows"
+        "Built": "R 4.4.3; ; 2025-06-23 17:29:00 UTC; windows"
       }
     },
     "fontawesome": {
@@ -4046,18 +4046,32 @@
         "Title": "Identify Ordinary High Water Marks",
         "Description": "An R Shiny app for remotely identifying stream Ordinary High Water Marks (OHWM) using publicly available terrain data for small sites.",
         "Version": "2025.05.17",
-        "Authors@R": "c(\nperson(\"Michael\", \"Dougherty\",\nemail = \"Michael.P.Dougherty@usace.army.mil\",\nrole = c(\"aut\", \"cre\"),\ncomment = c(ORCID = \"0000-0002-1465-5927\")),\nperson(\"Christopher\", \"Haring\",\nemail = \"Christopher.P.Haring@usace.army.mil\",\nrole = c(\"aut\")),\nperson(\"Thomas\", \"Darby\",\nemail = \"Thomas.A.Darby@usace.army.mil\",\nrole = c(\"rev\"))\n)",
+        "Authors@R": "c(\n    person(\"Michael\", \"Dougherty\", \n           email = \"Michael.P.Dougherty@usace.army.mil\", \n           role = c(\"aut\", \"cre\"),\n           comment = c(ORCID = \"0000-0002-1465-5927\")),\n    person(\"Christopher\", \"Haring\",\n           email = \"Christopher.P.Haring@usace.army.mil\",\n           role = c(\"aut\")),\n    person(\"Thomas\", \"Darby\",\n           email = \"Thomas.A.Darby@usace.army.mil\",\n           role = c(\"rev\"))\n    )",
         "License": "file LICENSE",
         "URL": "https://github.com/FluvialGeomorph/ohwm",
         "BugReports": "https://github.com/FluvialGeomorph/ohwm/issues",
-        "Imports": "assertthat,\nattempt,\nbslib,\nconfig,\ndplyr,\nDT,\nfluvgeo (>= 2025.5.3),\nglue,\ngolem,\ngt,\nhtmltools,\nleaflet,\nleaflet.extras,\nleafpm,\nmapedit,\npkgload,\npurrr,\nsf,\nshiny,\nshinybusy,\nshinyWidgets,\nterra,\ntibble,\ntidyterra",
-        "Suggests": "spelling,\ntestthat (>= 3.0.0)",
+        "Imports": "assertthat, attempt, bslib, config, dplyr, DT, fluvgeo (>=\n2025.5.3), glue, golem, gt, htmltools, leaflet, leaflet.extras,\nleafpm, mapedit, pkgload, purrr, sf, shiny, shinybusy,\nshinyWidgets, terra, tibble, tidyterra",
+        "Suggests": "spelling, testthat (>= 3.0.0)",
         "Encoding": "UTF-8",
-        "LazyData": "true",
         "RoxygenNote": "7.3.2",
         "Config/testthat/edition": "3",
         "Language": "en-US",
-        "Remotes": "FluvialGeomorph/fluvgeo@*release"
+        "Remotes": "FluvialGeomorph/fluvgeo@*release",
+        "RemoteType": "github",
+        "RemoteHost": "api.github.com",
+        "RemoteRepo": "ohwm",
+        "RemoteUsername": "FluvialGeomorph",
+        "RemoteRef": "v2025.05.07",
+        "RemoteSha": "576375520706f82c6edb55a4215a6d9e7bf6afc9",
+        "GithubRepo": "ohwm",
+        "GithubUsername": "FluvialGeomorph",
+        "GithubRef": "v2025.05.07",
+        "GithubSHA1": "576375520706f82c6edb55a4215a6d9e7bf6afc9",
+        "NeedsCompilation": "no",
+        "Packaged": "2025-05-17 22:00:08 UTC; B5PMMMPD",
+        "Author": "Michael Dougherty [aut, cre] (<https://orcid.org/0000-0002-1465-5927>),\n  Christopher Haring [aut],\n  Thomas Darby [rev]",
+        "Maintainer": "Michael Dougherty <Michael.P.Dougherty@usace.army.mil>",
+        "Built": "R 4.4.3; ; 2025-05-17 22:00:12 UTC; windows"
       }
     },
     "openssl": {
@@ -4124,13 +4138,13 @@
         "Package": "patchwork",
         "Type": "Package",
         "Title": "The Composer of Plots",
-        "Version": "1.3.0",
+        "Version": "1.3.1",
         "Authors@R": "\n    person(given = \"Thomas Lin\",\n           family = \"Pedersen\",\n           role = c(\"cre\", \"aut\"),\n           email = \"thomasp85@gmail.com\",\n           comment = c(ORCID = \"0000-0002-5147-4711\"))",
         "Maintainer": "Thomas Lin Pedersen <thomasp85@gmail.com>",
         "Description": "The 'ggplot2' package provides a strong API for sequentially \n    building up a plot, but does not concern itself with composition of multiple\n    plots. 'patchwork' is a package that expands the API to allow for \n    arbitrarily complex composition of plots by, among others, providing \n    mathematical operators for combining multiple plots. Other packages that try \n    to address this need (but with a different approach) are 'gridExtra' and \n    'cowplot'.",
         "License": "MIT + file LICENSE",
         "Encoding": "UTF-8",
-        "Imports": "ggplot2 (>= 3.0.0), gtable, grid, stats, grDevices, utils,\ngraphics, rlang (>= 1.0.0), cli, farver",
+        "Imports": "ggplot2 (>= 3.0.0), gtable (>= 0.3.6), grid, stats, grDevices,\nutils, graphics, rlang (>= 1.0.0), cli, farver",
         "RoxygenNote": "7.3.2",
         "URL": "https://patchwork.data-imaginist.com,\nhttps://github.com/thomasp85/patchwork",
         "BugReports": "https://github.com/thomasp85/patchwork/issues",
@@ -4138,11 +4152,11 @@
         "VignetteBuilder": "knitr",
         "Config/Needs/website": "gifski",
         "NeedsCompilation": "no",
-        "Packaged": "2024-09-16 08:14:08 UTC; thomas",
-        "Author": "Thomas Lin Pedersen [cre, aut]\n    (<https://orcid.org/0000-0002-5147-4711>)",
+        "Packaged": "2025-06-18 09:21:35 UTC; thomas",
+        "Author": "Thomas Lin Pedersen [cre, aut] (ORCID:\n    <https://orcid.org/0000-0002-5147-4711>)",
         "Repository": "CRAN",
-        "Date/Publication": "2024-09-16 09:30:02 UTC",
-        "Built": "R 4.4.2; ; 2025-02-09 03:35:19 UTC; windows"
+        "Date/Publication": "2025-06-21 13:20:05 UTC",
+        "Built": "R 4.4.3; ; 2025-06-22 23:50:42 UTC; windows"
       }
     },
     "pbapply": {
@@ -6975,7 +6989,7 @@
       "checksum": "daff492afd30594a188572dc80142cfe"
     },
     "renv.lock": {
-      "checksum": "9072f25225a6ad0631023d17ea44bccc"
+      "checksum": "ba2582076ffc90af0ca46cc81d76cf56"
     }
   },
   "users": null
