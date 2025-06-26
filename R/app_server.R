@@ -6,7 +6,7 @@
 #' @importFrom bslib nav_select
 #' @importFrom htmltools tags
 #' @importFrom purrr map
-#' @importFrom leaflet leaflet addProviderTiles setView addLayersControl 
+#' @importFrom leaflet leaflet addProviderTiles setView addLayersControl
 #'                     renderLeaflet leafletProxy leafletOptions leafletCRS
 #'                     removeShape addPolygons flyTo
 #' @importFrom dplyr %>% bind_rows mutate select filter distinct
@@ -17,29 +17,28 @@
 #' @importFrom terra plot crs ifel as.polygons disagg relate vect
 #' @importFrom tidyterra filter mutate
 #' @importFrom shinybusy show_modal_spinner remove_modal_spinner
-#' @importFrom fluvgeo sf_fix_crs get_dem detrend water_surface_poly 
+#' @importFrom fluvgeo sf_fix_crs get_dem detrend water_surface_poly
 #'             xs_pts_classify hydroflatten_dem floodplain_volume
 #'             get_leaflet get_terrain_leaflet get_results_leaflet
-#'             flowline flowline_points cross_section cross_section_points 
-#'             compare_long_profile xs_compare_plot_L2 
+#'             flowline flowline_points cross_section cross_section_points
+#'             compare_long_profile xs_compare_plot_L2
 #'             cross_section_dimensions_L2
 #' @importFrom shinyWidgets updateAutonumericInput updateNoUiSliderInput
 #' @importFrom gt render_gt
 #' @noRd
 app_server <- function(input, output, session) {
   # Console Logging ###########################################################
-  # Initialize console
   shinyjs::html("console", "")
   
   output$download_button <- downloadHandler(
-    filename = function(){
+    filename = function() {
       paste("fg-console-logs-", Sys.Date(), ".txt", sep = "")
     },
     content = function(file) {
       writeLines(paste("console", collapse = ", "), file)
     },
   )
-
+  
   # Define reactives ##########################################################
   reach_name <- reactiveVal({
     reach_name <- NULL
@@ -114,7 +113,8 @@ app_server <- function(input, output, session) {
     id = "xs_editor_ui_id",
     leafmap = draw_xs_map,
     targetLayerId = xs,
-    crs = 4326,                            # only supports 4326, don't change
+    crs = 4326,
+    # only supports 4326, don't change
     editor = "leafpm",
     editorOptions = list(
       toolbarOptions = pmToolbarOptions(
@@ -125,10 +125,7 @@ app_server <- function(input, output, session) {
         cutPolygon = FALSE,
         position = "topright"
       ),
-      drawOptions = pmDrawOptions(
-        snappable = FALSE,
-        tooltips = FALSE
-      )
+      drawOptions = pmDrawOptions(snappable = FALSE, tooltips = FALSE)
     )
   )
   
@@ -138,33 +135,41 @@ app_server <- function(input, output, session) {
       output$draw_fl_button <- renderUI({
         actionButton("draw_flowline", "Draw Flowline")
       })
-      log_message("Cross section drawn.")
-    },
-    message = function(m) {
-      shinyjs::html(id = "console", html = m$message, add = TRUE)
+      log_message("Flowline drawn.")
+    }, message = function(m) {
+      shinyjs::html(id = "console", add = TRUE,
+                    html = paste0(m$message, '<br>'))
     })
   })
   
   # Draw Flowline #############################################################
   observeEvent(input$draw_flowline, {
     show_modal_spinner(spin = "circle", text = "Retrieving Terrain")
-    # get finished xs
-    xs_mapedit <- xs_editor_ui()$finished
-    print("mapedit xs -------------------------------------------------------")
-    #save_test_data(xs_mapedit, "xs_mapedit")
-    print(xs_mapedit)
-    xs_mapedit <- sf_fix_crs(xs_mapedit)
-    print("tranform xs to 3857 ----------------------------------------------")
-    xs_3857 <- sf::st_transform(xs_mapedit, crs = 3857) # Web Mercator
-    xs <<- xs_3857 %>%
-      mutate(Seq = as.numeric(row.names(.))) %>%
-      select(Seq, geometry)
-    #save_test_data(xs, "xs")
-    print(xs)
-    # Overwrite dem
-    dem <<- get_dem(xs)
-    print("Returned DEM -----------------------------------------------------")
-    print(dem)
+    
+    withCallingHandlers({
+      # get finished xs
+      xs_mapedit <- xs_editor_ui()$finished
+      log_message("mapedit xs ------------------------------------------------")
+      #save_test_data(xs_mapedit, "xs_mapedit")
+      log_message(xs_mapedit)
+      xs_mapedit <- sf_fix_crs(xs_mapedit)
+      log_message("tranform xs to 3857 ---------------------------------------")
+      xs_3857 <- sf::st_transform(xs_mapedit, crs = 3857) # Web Mercator
+      xs <<- xs_3857 %>%
+        mutate(Seq = as.numeric(row.names(.))) %>%
+        select(Seq, geometry)
+      #save_test_data(xs, "xs")
+      log_message(xs)
+      # Overwrite dem
+      dem <<- get_dem(xs)
+      log_message("Returned DEM ----------------------------------------------")
+      log_message(dem)
+    }, message = function(m) {
+      shinyjs::html(id = "console",
+                    add = TRUE,
+                    html = paste0(m$message, '<br>'))
+    })
+
     # Create the leaflet terrain_map
     terrain_map <- get_terrain_leaflet(xs, dem)
     # Define the draw_fl mapedit module
@@ -173,7 +178,8 @@ app_server <- function(input, output, session) {
       id = "fl_editor_ui_id",
       leafmap = terrain_map,
       targetLayerId = fl,
-      crs = 4326,                            # only supports 4326, don't change
+      crs = 4326,
+      # only supports 4326, don't change
       editor = "leafpm",
       editorOptions = list(
         toolbarOptions = pmToolbarOptions(
@@ -184,12 +190,10 @@ app_server <- function(input, output, session) {
           cutPolygon = FALSE,
           position = "topright"
         ),
-        drawOptions = pmDrawOptions(
-          snappable = FALSE,
-          tooltips = FALSE
-        )
+        drawOptions = pmDrawOptions(snappable = FALSE, tooltips = FALSE)
       )
     )
+    
     # Navigate to Draw Flowline page
     nav_select(id = "main", selected = "Draw Flowline", session)
     remove_modal_spinner()
@@ -232,15 +236,17 @@ app_server <- function(input, output, session) {
     print("create channel and floodplain polys ------------------------------")
     print(input$channel_elevation)
     channel_poly <<- water_surface_poly(
-      rem = rem, 
-      water_surface_elevation = as.numeric(req(input$channel_elevation)), 
-      flowline = fl)
+      rem = rem,
+      water_surface_elevation = as.numeric(req(input$channel_elevation)),
+      flowline = fl
+    )
     print(channel_poly)
     print(input$floodplain_elevation)
     floodplain_poly <<- water_surface_poly(
-      rem = rem, 
-      water_surface_elevation = as.numeric(req(input$floodplain_elevation)), 
-      flowline = fl)
+      rem = rem,
+      water_surface_elevation = as.numeric(req(input$floodplain_elevation)),
+      flowline = fl
+    )
     print(floodplain_poly)
     print("process cross section --------------------------------------------")
     xs <<- cross_section(xs, fl_pts)
@@ -264,12 +270,14 @@ app_server <- function(input, output, session) {
     floodplain_ws <<- trend + (as.numeric(input$floodplain_elevation) - 100)
     print(floodplain_ws)
     print("calculate floodplain volumes -------------------------------------")
-    channel_vol <<- floodplain_volume(dem = dem, 
-                                      watersurface = channel_ws)
-    floodplain_vol <<- floodplain_volume(dem = dem, 
-                                         watersurface = floodplain_ws)
-    print(paste("channel vol: ", base::round(channel_vol, 2), 
-                "floodplain vol: ", base::round(floodplain_vol, 2)))
+    channel_vol <<- floodplain_volume(dem = dem, watersurface = channel_ws)
+    floodplain_vol <<- floodplain_volume(dem = dem, watersurface = floodplain_ws)
+    print(paste(
+      "channel vol: ",
+      base::round(channel_vol, 2),
+      "floodplain vol: ",
+      base::round(floodplain_vol, 2)
+    ))
     # print("calculate L2 xs dimensions ---------------------------------------")
     # xs_dims_l2 <<- xs %>%
     #   cross_section_dimensions_L2(
@@ -282,42 +290,34 @@ app_server <- function(input, output, session) {
     # print(xs_dims_l2)
     # Update selectors ########################################################
     print("pick cross section -----------------------------------------------")
-    updateSelectInput(
-      session, "pick_xs", 
-      choices = seq(min(xs_pts$Seq), max(xs_pts$Seq))
-    )
+    updateSelectInput(session, "pick_xs", choices = seq(min(xs_pts$Seq), max(xs_pts$Seq)))
     print(input$pick_xs)
     print("pick channel_elevation ------------------------------------------")
     print(input$channel_elevation)
     #rem_min <- 100
-    rem_min <- round(min(filter(xs_pts, 
-                                Seq == as.numeric(input$pick_xs))$Detrend_DEM_Z), 
-                     1) + 0.1
+    rem_min <- round(min(filter(
+      xs_pts, Seq == as.numeric(input$pick_xs)
+    )$Detrend_DEM_Z), 1) + 0.1
     rem_min <- ifelse(rem_min > 100, rem_min, 100)
-    rem_max <- round(max(filter(xs_pts, 
-                                Seq == as.numeric(input$pick_xs))$Detrend_DEM_Z),
-                     0) - 1
+    rem_max <- round(max(filter(
+      xs_pts, Seq == as.numeric(input$pick_xs)
+    )$Detrend_DEM_Z), 0) - 1
     print(paste0("range = ", rem_min, " - ", rem_max))
-    updateNoUiSliderInput(
-      session, 
-      inputId = "channel_elevation", 
-      range = c(rem_min, rem_max)
-    )
-    updateNoUiSliderInput(
-      session, 
-      inputId = "floodplain_elevation",
-      range = c(rem_min, rem_max)
-    )
+    updateNoUiSliderInput(session,
+                          inputId = "channel_elevation",
+                          range = c(rem_min, rem_max))
+    updateNoUiSliderInput(session,
+                          inputId = "floodplain_elevation",
+                          range = c(rem_min, rem_max))
     updateAutonumericInput(
       session,
       inputId = "floodplain_elevation",
       value = 112,
       options = list(
-        minuimumValue = min(filter(xs_pts, 
-                                   Seq == req(input$pick_xs))$Detrend_DEM_Z),
-        maximumValue = max(filter(xs_pts, 
-                                  Seq == req(input$pick_xs))$Detrend_DEM_Z),
-        wheelStep = 0.5)
+        minuimumValue = min(filter(xs_pts, Seq == req(input$pick_xs))$Detrend_DEM_Z),
+        maximumValue = max(filter(xs_pts, Seq == req(input$pick_xs))$Detrend_DEM_Z),
+        wheelStep = 0.5
+      )
     )
     # Create outputs ##########################################################
     print("create results map -----------------------------------------------")
@@ -337,7 +337,8 @@ app_server <- function(input, output, session) {
         bankfull_elevation = req(input$channel_elevation),
         xs_pts_list,
         extent = "floodplain",
-        aspect_ratio = NULL)
+        aspect_ratio = NULL
+      )
     })
     output$xs_plot_channel <- renderPlot({
       xs_compare_plot_L2(
@@ -346,26 +347,27 @@ app_server <- function(input, output, session) {
         bankfull_elevation = req(input$channel_elevation),
         xs_pts_list,
         extent = "channel",
-        aspect_ratio = NULL)
+        aspect_ratio = NULL
+      )
     })
     print("calculate volumes ------------------------------------------------")
-    output$floodplain_volumes <- render_gt(
-      floodplain_vol_table(channel_vol, floodplain_vol)
-    )
+    output$floodplain_volumes <- render_gt(floodplain_vol_table(channel_vol, floodplain_vol))
     print("calculate discharge ----------------------------------------------")
     output$channel_discharge <- render_gt(
       xs_discharge_table(
         xs_pts = xs_pts,
         xs_number = req(input$pick_xs),
         bf_estimate = req(input$channel_elevation),
-        mannings_n = as.numeric(input$channel_mannings))
+        mannings_n = as.numeric(input$channel_mannings)
+      )
     )
     output$floodplain_discharge <- render_gt(
       xs_discharge_table(
         xs_pts = xs_pts,
         xs_number = req(input$pick_xs),
         bf_estimate = req(input$floodplain_elevation),
-        mannings_n = as.numeric(input$floodplain_mannings))
+        mannings_n = as.numeric(input$floodplain_mannings)
+      )
     )
     remove_modal_spinner()
     
@@ -376,23 +378,26 @@ app_server <- function(input, output, session) {
       print("update channel_elevation ---------------------------------------")
       print(req(input$channel_elevation))
       channel_poly <<- water_surface_poly(
-        rem = rem, 
-        water_surface_elevation = as.numeric(req(input$channel_elevation)), 
-        flowline = fl)
+        rem = rem,
+        water_surface_elevation = as.numeric(req(input$channel_elevation)),
+        flowline = fl
+      )
       print(channel_poly)
       print("update cross section points classify ---------------------------")
-      xs_pts <<- xs_pts_classify(xs_pts, channel_poly, floodplain_poly,
-                                 buffer_distance = 2)
+      xs_pts <<- xs_pts_classify(xs_pts, channel_poly, floodplain_poly, buffer_distance = 2)
       xs_pts_list <- list("latest" = xs_pts)
       print("create channel water surface -----------------------------------")
       print(input$channel_elevation)
       channel_ws <<- trend + (as.numeric(input$channel_elevation) - 100)
       print(channel_ws)
       print("calculate floodplain volumes -----------------------------------")
-      channel_vol <<- floodplain_volume(dem = dem, 
-                                        watersurface = channel_ws)
-      print(paste("channel vol: ", base::round(channel_vol, 2), 
-                  "floodplain vol: ", base::round(floodplain_vol, 2)))
+      channel_vol <<- floodplain_volume(dem = dem, watersurface = channel_ws)
+      print(paste(
+        "channel vol: ",
+        base::round(channel_vol, 2),
+        "floodplain vol: ",
+        base::round(floodplain_vol, 2)
+      ))
       # print("calculate L2 xs dimensions -------------------------------------")
       # xs_dims_l2 <<- xs %>%
       #   cross_section_dimensions_L2(
@@ -405,15 +410,19 @@ app_server <- function(input, output, session) {
       # print(xs_dims_l2)
       print("update results_map ---------------------------------------------")
       leafletProxy(mapId = "results_map", data = channel_poly) %>%
-        flyTo(lng  = input$results_map_center$lng, 
-              lat  = input$results_map_center$lat, 
-              zoom = input$results_map_zoom) %>%
+        flyTo(
+          lng  = input$results_map_center$lng,
+          lat  = input$results_map_center$lat,
+          zoom = input$results_map_zoom
+        ) %>%
         removeShape(layerId = "channel_poly") %>%
         addPolygons(
           data = st_transform(channel_poly, crs = 4326),
           layerId = "channel_poly",
-          color = "navy", weight = 1,
-          group = "Channel")
+          color = "navy",
+          weight = 1,
+          group = "Channel"
+        )
       print("update cross section plots -------------------------------------")
       output$xs_plot_floodplain <- renderPlot({
         xs_compare_plot_L2(
@@ -422,7 +431,8 @@ app_server <- function(input, output, session) {
           bankfull_elevation = req(input$channel_elevation),
           xs_pts_list,
           extent = "floodplain",
-          aspect_ratio = NULL)
+          aspect_ratio = NULL
+        )
       })
       output$xs_plot_channel <- renderPlot({
         xs_compare_plot_L2(
@@ -431,7 +441,8 @@ app_server <- function(input, output, session) {
           bankfull_elevation = req(input$channel_elevation),
           xs_pts_list,
           extent = "channel",
-          aspect_ratio = NULL)
+          aspect_ratio = NULL
+        )
       })
       print("update discharge -----------------------------------------------")
       output$channel_discharge <- render_gt(
@@ -439,11 +450,10 @@ app_server <- function(input, output, session) {
           xs_pts = xs_pts,
           xs_number = req(input$pick_xs),
           bf_estimate = req(input$channel_elevation),
-          mannings_n = as.numeric(input$channel_mannings))
+          mannings_n = as.numeric(input$channel_mannings)
+        )
       )
-      output$floodplain_volumes <- render_gt(
-        floodplain_vol_table(channel_vol, floodplain_vol)
-      )
+      output$floodplain_volumes <- render_gt(floodplain_vol_table(channel_vol, floodplain_vol))
       remove_modal_spinner()
     })
     
@@ -453,33 +463,40 @@ app_server <- function(input, output, session) {
       print("update floodplain_elevation ------------------------------------")
       print(req(input$floodplain_elevation))
       floodplain_poly <<- water_surface_poly(
-        rem = rem, 
-        water_surface_elevation = as.numeric(req(input$floodplain_elevation)), 
-        flowline = fl)
+        rem = rem,
+        water_surface_elevation = as.numeric(req(input$floodplain_elevation)),
+        flowline = fl
+      )
       print(floodplain_poly)
-      xs_pts <<- xs_pts_classify(xs_pts, channel_poly, floodplain_poly,
-                                 buffer_distance = 2)
+      xs_pts <<- xs_pts_classify(xs_pts, channel_poly, floodplain_poly, buffer_distance = 2)
       xs_pts_list <- list("latest" = xs_pts)
       print("create floodplain water surface --------------------------------")
       print(input$floodplain_elevation)
       floodplain_ws <<- trend + (as.numeric(input$floodplain_elevation) - 100)
       print(floodplain_ws)
       print("calculate floodplain volumes -----------------------------------")
-      floodplain_vol <<- floodplain_volume(dem = dem, 
-                                           watersurface = floodplain_ws)
-      print(paste("channel vol: ", base::round(channel_vol, 2), 
-                  "floodplain vol: ", base::round(floodplain_vol, 2)))
+      floodplain_vol <<- floodplain_volume(dem = dem, watersurface = floodplain_ws)
+      print(paste(
+        "channel vol: ",
+        base::round(channel_vol, 2),
+        "floodplain vol: ",
+        base::round(floodplain_vol, 2)
+      ))
       print("update results_map ---------------------------------------------")
       leafletProxy(mapId = "results_map", data = floodplain_poly) %>%
-        flyTo(lng  = input$results_map_center$lng, 
-              lat  = input$results_map_center$lat, 
-              zoom = input$results_map_zoom) %>%
+        flyTo(
+          lng  = input$results_map_center$lng,
+          lat  = input$results_map_center$lat,
+          zoom = input$results_map_zoom
+        ) %>%
         removeShape(layerId = "floodplain_poly") %>%
         addPolygons(
           data = st_transform(floodplain_poly, crs = 4326),
           layerId = "floodplain_poly",
-          color = "forestgreen", weight = 1,
-          group = "Floodplain")
+          color = "forestgreen",
+          weight = 1,
+          group = "Floodplain"
+        )
       print("update cross section plots -------------------------------------")
       output$xs_plot_floodplain <- renderPlot({
         xs_compare_plot_L2(
@@ -488,7 +505,8 @@ app_server <- function(input, output, session) {
           bankfull_elevation = req(input$channel_elevation),
           xs_pts_list,
           extent = "floodplain",
-          aspect_ratio = NULL)
+          aspect_ratio = NULL
+        )
       })
       output$xs_plot_channel <- renderPlot({
         xs_compare_plot_L2(
@@ -497,7 +515,8 @@ app_server <- function(input, output, session) {
           bankfull_elevation = req(input$channel_elevation),
           xs_pts_list,
           extent = "channel",
-          aspect_ratio = NULL)
+          aspect_ratio = NULL
+        )
       })
       print("update discharge -----------------------------------------------")
       output$floodplain_discharge <- render_gt(
@@ -505,11 +524,10 @@ app_server <- function(input, output, session) {
           xs_pts = xs_pts,
           xs_number = req(input$pick_xs),
           bf_estimate = req(input$floodplain_elevation),
-          mannings_n = as.numeric(input$floodplain_mannings))
+          mannings_n = as.numeric(input$floodplain_mannings)
+        )
       )
-      output$floodplain_volumes <- render_gt(
-        floodplain_vol_table(channel_vol, floodplain_vol)
-      )
+      output$floodplain_volumes <- render_gt(floodplain_vol_table(channel_vol, floodplain_vol))
       remove_modal_spinner()
     })
     
@@ -522,7 +540,8 @@ app_server <- function(input, output, session) {
           xs_pts = xs_pts,
           xs_number = req(input$pick_xs),
           bf_estimate = req(input$channel_elevation),
-          mannings_n = as.numeric(input$channel_mannings))
+          mannings_n = as.numeric(input$channel_mannings)
+        )
       )
       remove_modal_spinner()
     })
@@ -534,7 +553,8 @@ app_server <- function(input, output, session) {
           xs_pts = xs_pts,
           xs_number = req(input$pick_xs),
           bf_estimate = req(input$floodplain_elevation),
-          mannings_n = as.numeric(input$floodplain_mannings))
+          mannings_n = as.numeric(input$floodplain_mannings)
+        )
       )
       remove_modal_spinner()
     })

@@ -29,6 +29,11 @@ app_ui <- function(request) {
     "(h) Very weedy reaches, seep pools or floodways with heavy stands of timber and underbrush (n = 0.100)" = 0.100)
   
   tagList(
+    tags$head(
+      tags$style("
+        .scrollable-accordion .accordion-body {max-height: 300px; overflow-y: scroll; resize: vertical;}
+      ")
+    ),
     golem_add_external_resources(),
     page_navbar(
       title = "Floodplain Connectivity",
@@ -37,8 +42,10 @@ app_ui <- function(request) {
       footer = accordion(
         id = "logs",
         open = FALSE,
+        class = "scrollable-accordion",
         accordion_panel(
           title = "Console",
+          height = "20%",
           textOutput("console"),
           downloadButton("download_button", label = "Download Logs")
         )

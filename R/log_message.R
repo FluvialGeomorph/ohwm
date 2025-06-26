@@ -6,10 +6,18 @@
 #' @export
 #'
 log_message <- function(msg) {
-  message <- message(
-    paste(
-      format(Sys.time(), usetz = TRUE), "-",
-      as.character(msg),
-      "<br>")
+  if (is.character(msg)) {                      # simple characters
+    message(paste0(
+      format(Sys.time(), usetz = TRUE),
+      " - ",
+      msg)
     )
+  } else {                                      # complex objects with output
+    message(paste0(
+      format(Sys.time(), usetz = TRUE),
+      " - ",
+      capture.output(msg, type = "output"),
+      collapse = "<br>"
+    ))
+  }
 }
