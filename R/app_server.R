@@ -27,6 +27,19 @@
 #' @importFrom gt render_gt
 #' @noRd
 app_server <- function(input, output, session) {
+  # Console Logging ###########################################################
+  # Initialize console
+  shinyjs::html("console", "")
+  
+  output$download_button <- downloadHandler(
+    filename = function(){
+      paste("fg-console-logs-", Sys.Date(), ".txt", sep = "")
+    },
+    content = function(file) {
+      writeLines(paste("console", collapse = ", "), file)
+    },
+  )
+
   # Define reactives ##########################################################
   reach_name <- reactiveVal({
     reach_name <- NULL
@@ -120,9 +133,15 @@ app_server <- function(input, output, session) {
   )
   
   observeEvent(xs_editor_ui()$finished, {
-    # Add view terrain button
-    output$draw_fl_button <- renderUI({
-      actionButton("draw_flowline", "Draw Flowline")
+    withCallingHandlers({
+      # Add view terrain button
+      output$draw_fl_button <- renderUI({
+        actionButton("draw_flowline", "Draw Flowline")
+      })
+      log_message("Cross section drawn.")
+    },
+    message = function(m) {
+      shinyjs::html(id = "console", html = m$message, add = TRUE)
     })
   })
   

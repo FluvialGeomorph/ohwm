@@ -10,9 +10,7 @@
 #' @importFrom mapedit editModUI
 #' @importFrom leaflet leafletOutput
 #' @importFrom shinyWidgets autonumericInput noUiSliderInput wNumbFormat
-#' prepare_slim_choices
 #' @importFrom gt gt_output
-#' 
 #' @noRd
 app_ui <- function(request) {
   
@@ -33,9 +31,18 @@ app_ui <- function(request) {
   tagList(
     golem_add_external_resources(),
     page_navbar(
-      title = "FluvialGeomorph Floodplain Connectivity",
+      title = "Floodplain Connectivity",
       id = "main",
       theme = bs_theme(bootswatch = "cerulean", version = 5),
+      footer = accordion(
+        id = "logs",
+        open = FALSE,
+        accordion_panel(
+          title = "Console",
+          textOutput("console"),
+          downloadButton("download_button", label = "Download Logs")
+        )
+      ),
       
       nav_panel(title = "Draw XS", layout_sidebar(
         # Display the xs editing module
