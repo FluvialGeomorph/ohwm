@@ -31,7 +31,10 @@ app_ui <- function(request) {
   tagList(
     tags$head(
       tags$style("
-        .scrollable-accordion .accordion-body {max-height: 300px; overflow-y: scroll; resize: vertical;}
+        .scrollable-accordion .accordion-body {
+          max-height: 300px; overflow-y: scroll; resize: vertical; 
+          display: flex; flex-direction: column-reverse;
+        }
       ")
     ),
     golem_add_external_resources(),
@@ -45,9 +48,7 @@ app_ui <- function(request) {
         class = "scrollable-accordion",
         accordion_panel(
           title = "Console",
-          height = "20%",
-          textOutput("console"),
-          downloadButton("download_button", label = "Download Logs")
+          htmlOutput("console")
         )
       ),
       

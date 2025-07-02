@@ -28,16 +28,6 @@
 #' @noRd
 app_server <- function(input, output, session) {
   # Console Logging ###########################################################
-  shinyjs::html("console", "")
-  
-  output$download_button <- downloadHandler(
-    filename = function() {
-      paste("fg-console-logs-", Sys.Date(), ".txt", sep = "")
-    },
-    content = function(file) {
-      writeLines(paste("console", collapse = ", "), file)
-    },
-  )
   
   # Define reactives ##########################################################
   reach_name <- reactiveVal({
@@ -165,8 +155,7 @@ app_server <- function(input, output, session) {
       log_message("Returned DEM ----------------------------------------------")
       log_message(dem)
     }, message = function(m) {
-      shinyjs::html(id = "console",
-                    add = TRUE,
+      shinyjs::html(id = "console", add = TRUE,
                     html = paste0(m$message, '<br>'))
     })
 
