@@ -42,11 +42,11 @@ xs_dimensions_table <- function(xs_pts, xs_number, bf_estimate, regions) {
       "bankfull_elevation",
       "discharge"
     )) %>%
-    mutate(xs_type = recode(xs_type, 
+    mutate(xs_type = recode(.data$xs_type, 
                             "DEM derived cross section" = "DEM derived")) %>%
     arrange(.data$xs_type) %>%
-    arrange(match(xs_type, c("DEM derived"))) %>%
-    filter(xs_type == "DEM derived") %>%
+    arrange(match(.data$xs_type, c("DEM derived"))) %>%
+    filter(.data$xs_type == "DEM derived") %>%
     select(-c(drainage_area, xs_type))
   
   gt_table <- dims_table |>

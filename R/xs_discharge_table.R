@@ -26,8 +26,8 @@ xs_discharge_table <- function(xs_pts, xs_number, bf_estimate, mannings_n) {
 
   # Calculate the slope from adjacent cross sections
   xs_ss <- xs_pts %>%
-    group_by(Seq) %>%
-    slice_min(DEM_Z, n = 1, with_ties = FALSE) %>%
+    group_by(.data$Seq) %>%
+    slice_min(.data$DEM_Z, n = 1, with_ties = FALSE) %>%
     rename(Z = DEM_Z) %>%
     slope_sinuosity(lead_n = 1, lag_n = 1, use_smoothing = FALSE, 
                     vert_units = "ft") %>%
@@ -84,13 +84,13 @@ xs_discharge_table <- function(xs_pts, xs_number, bf_estimate, mannings_n) {
                             "DEM derived cross section" = "DEM derived")) %>%
     mutate(nhd_slope = nhd_slope) %>%
     mutate(mannings_n = mannings_n) %>%
-    filter(xs_type == "DEM derived") %>%
-    mutate(R_proxy = xs_depth) %>%
-    mutate(R = xs_depth ^ (2/3)) %>%
+    filter(.data$xs_type == "DEM derived") %>%
+    mutate(R_proxy = .data$xs_depth) %>%
+    mutate(R = .data$xs_depth^(2/3)) %>%
     mutate(S_proxy = nhd_slope) %>%
-    mutate(S = nhd_slope ^ (1/2)) %>%
-    mutate(Q = (1.486 / mannings_n) * xs_area * R * S) %>%
-    mutate(V = Q / xs_area) %>%
+    mutate(S = .data$nhd_slope^(1/2)) %>%
+    mutate(Q = (1.486 / .data$mannings_n) * .data$xs_area * .data$R * .data$S) %>%
+    mutate(V = Q / .data$xs_area) %>%
     select(c(xs_area, xs_width, xs_depth, drainage_area, 
              R_proxy, S_proxy, Q, V))
     

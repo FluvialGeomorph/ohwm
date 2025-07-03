@@ -128,7 +128,7 @@ app_server <- function(input, output, session) {
       log_message("Flowline drawn.")
     }, message = function(m) {
       shinyjs::html(id = "console", add = TRUE,
-                    html = paste0(m$message, '<br>'))
+                    html = paste0(m$message, "<br>"))
     })
   })
   
@@ -156,7 +156,7 @@ app_server <- function(input, output, session) {
       log_message(dem)
     }, message = function(m) {
       shinyjs::html(id = "console", add = TRUE,
-                    html = paste0(m$message, '<br>'))
+                    html = paste0(m$message, "<br>"))
     })
 
     # Create the leaflet terrain_map
@@ -241,7 +241,7 @@ app_server <- function(input, output, session) {
     xs <<- cross_section(xs, fl_pts)
     print(xs)
     print("process cross section points -------------------------------------")
-    station_distance = 1
+    station_distance <- 1
     xs_pts <<- cross_section_points(xs, dem, rem, station_distance)
     print(xs_pts)
     xs_pts <<- xs_pts %>%
@@ -560,8 +560,9 @@ app_server <- function(input, output, session) {
       'Use the "Draw Polyline" tool to draw cross sections.',
       'Click the "Draw Flowline" button to go to the next step.'
     )
-    ul <- htmltools::tags$ul(purrr::map(steps, function(.x)
-      tags$li(.x)))
+    ul <- htmltools::tags$ul(purrr::map(steps, function(.x) {
+      tags$li(.x)
+    }))
   })
   
   ## create draw flowline page instructions
@@ -571,7 +572,8 @@ app_server <- function(input, output, session) {
       "Use the DEM's color ramp to trace the lowest elevation along the stream centerline.",
       'Click the "View Results" button to go to the next step.'
     )
-    ul <- htmltools::tags$ul(purrr::map(steps, function(.x)
-      tags$li(.x)))
+    ul <- htmltools::tags$ul(purrr::map(steps, function(.x) {
+      tags$li(.x)
+    }))
   })
 }

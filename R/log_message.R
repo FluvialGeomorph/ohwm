@@ -4,7 +4,8 @@
 #' @param msg character; The text of the message to display in the log.
 #' @returns message condition
 #' @export
-#'
+#' @importFrom utils capture.output
+#' 
 log_message <- function(msg) {
   if (is.character(msg)) {                      # simple characters
     message(paste0(

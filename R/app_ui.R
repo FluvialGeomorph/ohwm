@@ -13,7 +13,6 @@
 #' @importFrom gt gt_output
 #' @noRd
 app_ui <- function(request) {
-  
   # Help text and variable values
   channel_rem_info <- "Set the channel's water surfce level in Relative Elevation Model (REM) units."
   floodplain_rem_info <- "Set the floodplain's water surface level in Relative Elevation Model (REM) units."
@@ -26,16 +25,19 @@ app_ui <- function(request) {
     "(e) Same as (c), at lower stages, with less effective slopes and sections (n = 0.048)" = 0.048,
     "(f) Same as (d), but more stones (n = 0.050)" = 0.050,
     "(g) Sluggish reaches, weedy, deep pools (n = 0.070)" = 0.070,
-    "(h) Very weedy reaches, seep pools or floodways with heavy stands of timber and underbrush (n = 0.100)" = 0.100)
+    "(h) Very weedy reaches, seep pools or floodways with heavy stands of timber and underbrush (n = 0.100)" = 0.100
+  )
   
   tagList(
     tags$head(
-      tags$style("
+      tags$style(
+        "
         .scrollable-accordion .accordion-body {
-          max-height: 300px; overflow-y: scroll; resize: vertical; 
+          max-height: 300px; overflow-y: scroll; resize: vertical;
           display: flex; flex-direction: column-reverse;
         }
-      ")
+      "
+      )
     ),
     golem_add_external_resources(),
     page_navbar(
@@ -46,10 +48,7 @@ app_ui <- function(request) {
         id = "logs",
         open = FALSE,
         class = "scrollable-accordion",
-        accordion_panel(
-          title = "Console",
-          htmlOutput("console")
-        )
+        accordion_panel(title = "Console", htmlOutput("console"))
       ),
       
       nav_panel(title = "Draw XS", layout_sidebar(
@@ -60,7 +59,7 @@ app_ui <- function(request) {
           position = "right",
           width = "25%",
           uiOutput("draw_xs_instructions"),
-          uiOutput('draw_fl_button')
+          uiOutput("draw_fl_button")
         )
       )),
       
@@ -73,7 +72,7 @@ app_ui <- function(request) {
           width = "25%",
           uiOutput("draw_fl_instructions"),
           #actionButton("view_results", "View Results")
-          uiOutput('view_results_button')
+          uiOutput("view_results_button")
         )
       )),
       
@@ -88,72 +87,87 @@ app_ui <- function(request) {
             open = c("Cross Sections", "Discharge"),
             accordion_panel(
               title = "Longitudinal Profile", 
-              plotOutput("long_profile", height = "250px")),
+              plotOutput("long_profile", height = "250px")), 
             accordion_panel(
               title = "Cross Sections",
-              selectInput("pick_xs", label = "Select a cross section:", 
-                          choices = c(1)),
+              selectInput("pick_xs", 
+                          label = "Select a cross section:", choices = c(1)),
               layout_columns(
                 card(
-                  card_header("Set Channel REM",
-                    tooltip(trigger = bs_icon("info-circle"),
+                  card_header(
+                    "Set Channel REM",
+                    tooltip(
+                      trigger = bs_icon("info-circle"),
                       placement = "right",
-                      channel_rem_info)
+                      channel_rem_info
+                    )
                   ),
-                  noUiSliderInput(inputId = "channel_elevation",
-                    min = 100, max = 130, value = 103, 
+                  noUiSliderInput(
+                    inputId = "channel_elevation",
+                    min = 100,
+                    max = 130,
+                    value = 103,
                     format = wNumbFormat(decimals = 1),
-                    orientation = "horizontal", 
-                    update_on = "end")
+                    orientation = "horizontal",
+                    update_on = "end"
+                  )
                 ),
                 card(
-                  card_header("Set Floodplain REM",
-                    tooltip(trigger = bs_icon("info-circle"),
+                  card_header(
+                    "Set Floodplain REM",
+                    tooltip(
+                      trigger = bs_icon("info-circle"),
                       placement = "right",
-                      floodplain_rem_info)
+                      floodplain_rem_info
+                    )
                   ),
-                  noUiSliderInput(inputId = "floodplain_elevation",
-                    min = 100, max = 130, value = 112, 
+                  noUiSliderInput(
+                    inputId = "floodplain_elevation",
+                    min = 100,
+                    max = 130,
+                    value = 112,
                     format = wNumbFormat(decimals = 1),
-                    orientation = "horizontal", 
-                    update_on = "end")
+                    orientation = "horizontal",
+                    update_on = "end"
+                  )
                 )
               ),
               plotOutput("xs_plot_channel", height = "250px"),
               plotOutput("xs_plot_floodplain", height = "250px"),
               card(
                 card_header("Storage Volume", class = "p-2"),
-                card_body(class = "p-0",
-                  gt_output("floodplain_volumes")
-                )
+                card_body(class = "p-0", gt_output("floodplain_volumes"))
               )
             ),
             accordion_panel(
               title = "Discharge",
               layout_columns(
                 withMathJax("$$Q = \\frac{1.486}{n} A R ^\\frac{2}{3} S^\\frac{1}{2}$$"),
-                tooltip(bs_icon("info-circle"),
-                  discharge_info,
-                  placement = "right")
+                tooltip(bs_icon("info-circle"), 
+                        discharge_info, placement = "right")
               ),
               layout_columns(
                 card(
                   card_header("Channel", class = "p-2"),
-                  card_body(class = "p-2",
+                  card_body(
+                    class = "p-2",
                     selectInput(
-                      inputId = "channel_mannings", 
+                      inputId = "channel_mannings",
                       label = "Set Manning's n:",
-                      choices = mannings_choices),
+                      choices = mannings_choices
+                    ),
                     gt_output("channel_discharge")
                   )
-                ), 
+                ),
                 card(
                   card_header("Floodplain", class = "p-2"),
-                  card_body(class = "p-2",
+                  card_body(
+                    class = "p-2",
                     selectInput(
-                      inputId = "floodplain_mannings", 
+                      inputId = "floodplain_mannings",
                       label = "Set Manning's n:",
-                      choices = mannings_choices),
+                      choices = mannings_choices
+                    ),
                     gt_output("floodplain_discharge")
                   )
                 )

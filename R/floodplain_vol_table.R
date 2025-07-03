@@ -29,7 +29,8 @@ floodplain_vol_table <- function(channel_vol, floodplain_vol) {
       column_labels.font.weight = "bold",
       table.font.size = "small",
       column_labels.padding = px(2),
-      data_row.padding = px(1))
+      data_row.padding = px(1)
+    )
   #vol_table
   return(vol_table)
 }
