@@ -18,7 +18,7 @@
 devtools::check()
 #rhub::check_for_cran()
 
-# Deploy
+# Update
 
 ## use remotes::install_github to indicate to install source to renv
 remotes::install_github("FluvialGeomorph/fluvgeo@*release")
@@ -27,6 +27,15 @@ remotes::install_github("FluvialGeomorph/ohwm@*release")
 
 ## update renv
 renv::snapshot()
+
+
+# Validate
+#shinyValidator::use_validator()
+
+shinyValidator::audit_app()
+
+
+# Deploy
 
 ## Local, CRAN or Package Manager ----
 ## This will build a tar.gz that can be installed locally,
@@ -51,19 +60,19 @@ golem::add_shinyappsio_file()
 rsconnect::writeManifest()
 
 ## In command line.
-rsconnect::deployApp(
-  appName = desc::desc_get_field("Package"),
-  appTitle = desc::desc_get_field("Package"),
-  appFiles = c(
-    # Add any additional files unique to your app here.
-    "R/",
-    "inst/",
-    "NAMESPACE",
-    "DESCRIPTION",
-    "app.R",
-    ".Renviron"
-  ),
-  appId = rsconnect::deployments(".")$appID,
-  lint = FALSE,
-  forceUpdate = TRUE
-)
+# rsconnect::deployApp(
+#   appName = desc::desc_get_field("Package"),
+#   appTitle = desc::desc_get_field("Package"),
+#   appFiles = c(
+#     # Add any additional files unique to your app here.
+#     "R/",
+#     "inst/",
+#     "NAMESPACE",
+#     "DESCRIPTION",
+#     "app.R",
+#     ".Renviron"
+#   ),
+#   appId = rsconnect::deployments(".")$appID,
+#   lint = FALSE,
+#   forceUpdate = TRUE
+# )

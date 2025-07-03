@@ -11,3 +11,8 @@ $run_dev.*
 ^app\.R$
 ^rsconnect$
 ^\.rscignore$
+^\.github$
+^\.Rprofile$
+^\.lintr$
+^public$
+^recording\.log$
