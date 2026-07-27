@@ -7503,6 +7503,9 @@
     }
   },
   "files": {
+    ".fluvial-app.yml": {
+      "checksum": "8a79a81245b8ac067c99fb10745f2816"
+    },
     ".lintr": {
       "checksum": "90fe41ffbbef2f635be6650fb440fae5"
     },
@@ -7510,19 +7513,22 @@
       "checksum": "167a25dbb4d91d9f8ff511d792bd1a77"
     },
     ".Rprofile": {
-      "checksum": "199bc1868808c3f7821c6dca09dbf9b2"
+      "checksum": "0df9a658821549fb75df08455aa0c6ff"
     },
     "AGENTS.md": {
-      "checksum": "b317f68dba1169bc70f741a11c16b494"
+      "checksum": "4eb04b721f86eaa6a07ee9a9871af435"
     },
     "app.R": {
-      "checksum": "752f8928df0596b8bd5a1359b943326e"
+      "checksum": "57a5e4d5e53e1fa19289783240029906"
     },
     "DESCRIPTION": {
-      "checksum": "877276ecea41c23129823bb9e2acf95d"
+      "checksum": "16f4fb8d21acfec384ec0a09c725d451"
     },
     "inst/app/skin-default.yml": {
       "checksum": "dff8f3454f05463288387ec854939b8a"
+    },
+    "inst/app/skin.yml": {
+      "checksum": "fc903dafb4acb902e8458de7472b4574"
     },
     "inst/app/www/favicon.png": {
       "checksum": "4d047df9e09958186f454b6d046de6e3"
